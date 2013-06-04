@@ -1,2 +1,5 @@
-name: Nikica's dev shits
+name: "Nikica's dev shits"
+description: "Nikica's blog"
 pygments: true
+paginate: 5
+exclude: ["vendor"]
