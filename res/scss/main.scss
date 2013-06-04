@@ -2,6 +2,13 @@
 @import 'foundation';
 
 html, body {
-	background-image:url('/res/img/noisy_grid/noisy_grid.png')
-	// background-image:url('/res/img/vertical_cloth/vertical_cloth.png')
+	background-image:url('/res/img/bg/mooning.png')
+}
+
+li.github-link img {
+	padding-bottom: 6px;
+}
+
+li.linkedin-link img {
+	padding-bottom: 4px;
 }

@@ -6656,5 +6656,15 @@ a.th {
 
 /* line 4, ../scss/main.scss */
 html, body {
-  background-image: url("/res/img/noisy_grid/noisy_grid.png");
+  background-image: url("/res/img/bg/mooning.png");
+}
+
+/* line 8, ../scss/main.scss */
+li.github-link img {
+  padding-bottom: 6px;
+}
+
+/* line 12, ../scss/main.scss */
+li.linkedin-link img {
+  padding-bottom: 4px;
 }

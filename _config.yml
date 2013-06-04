@@ -1,5 +1,7 @@
-name: "Nikica's dev shits"
-description: "Nikica's blog"
+name: "Thought -> IO ( )"
+description: Nikica's blog
 pygments: true
 paginate: 5
 exclude: ["vendor"]
+tag_page_layout: tag_page
+tag_page_dir: tag
