@@ -1,4 +1,4 @@
-name: "Thought -> IO ( )"
+name: "blog :: IO ( Thought )"
 description: Nikica's blog
 pygments: true
 paginate: 5

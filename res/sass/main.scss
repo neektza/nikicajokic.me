@@ -1,5 +1,6 @@
 @import 'normalize';
 @import 'foundation';
+@import 'vars';
 
 html, body {
 	background-image:url('/res/img/bg/mooning.png')
@@ -11,4 +12,12 @@ li.github-link img {
 
 li.linkedin-link img {
 	padding-bottom: 4px;
+}
+
+a {
+	color: $alt1_color;
+}
+
+a:visited {
+	color: $alt2_color;
 }
