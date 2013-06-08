@@ -6660,21 +6660,26 @@ html, body {
 }
 
 /* line 9, ../sass/main.scss */
+.excerpt {
+  margin-left: 15px;
+}
+
+/* line 13, ../sass/main.scss */
 li.github-link img {
   padding-bottom: 6px;
 }
 
-/* line 13, ../sass/main.scss */
+/* line 17, ../sass/main.scss */
 li.linkedin-link img {
   padding-bottom: 4px;
 }
 
-/* line 17, ../sass/main.scss */
+/* line 21, ../sass/main.scss */
 a {
   color: #944648;
 }
 
-/* line 21, ../sass/main.scss */
+/* line 25, ../sass/main.scss */
 a:visited {
   color: #958847;
 }
