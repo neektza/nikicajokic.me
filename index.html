@@ -3,12 +3,14 @@ layout: default
 type: landing
 ---
 
-<h3>Recent Posts</h3>
-<ul class="posts">
-	{% for post in site.posts %}
-		<li>
-			<span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a>
-			<p class="excerpt">{{ post.excerpt }}</p>
-		</li>
-	{% endfor %}
+<h3>:: Posts</h3>
+<hr/>
+<ul class="posts no-bullet">
+	{% include post_list.html %}
+</ul>
+
+<h3>:: Tags</h3>
+<hr/>
+<ul class="tags inline-list">
+	{% include tag_list.html %}
 </ul>

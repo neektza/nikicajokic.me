@@ -1,7 +1,7 @@
 name: "PLT confusion"
 description: Nikica's blog
 pygments: true
-paginate: 5
+paginate: 10 
 exclude: ["vendor"]
-tag_page_layout: tag_page
-tag_page_dir: tag
+tag_page_layout: tags
+tag_page_dir: tags

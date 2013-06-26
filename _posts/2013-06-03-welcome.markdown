@@ -1,9 +1,8 @@
 ---
 layout: post
 title: "Welcome to my blog"
-date: 2013-06-03 18:41
+date: 2013-06-03
 tags: announcement
-excerpt: Welcome to my blog...
 ---
 
-Welcome to my blog. I'll be keeping notes about things of interest to me here. Mostly programming and computer science, but other topics may creep in (probably martial arts related).
+Welcome to my blog. Have a nice stay :)

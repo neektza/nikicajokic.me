@@ -1,9 +1,8 @@
 ---
 layout: post
 title: "Objects and Ruby"
-date: 2013-06-26 15:13
+date: 2013-06-26
 tags: programming ruby oop
-excerpt: Not so recently I've become more and more frustrated with Ruby's object orientated nature...
 ---
 
 Not so recently I've become more and more frustrated with Ruby's object orientated nature. Specifically, that one needs to instatntiate something just to use a few functions.
@@ -12,21 +11,7 @@ Not to say that it must be that way, because it mostly depends on style, but it 
 
 An example:
 
-{% highlight ruby lineos %}
-
-	class SomeServiceObject
-	  def initialize(foo)
-	    @foo = foo
-	  end
-
-	  def a_method
-	    manipulate(foo)
-	  end
-	end
-
-	SomeServiceObject.new(foo).a_method
-
-{% endhighlight %}
+{% gist 5872010 %}
 
 <br/>
 
