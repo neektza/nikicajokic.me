@@ -6683,3 +6683,13 @@ a {
 a:visited {
   color: #958847;
 }
+
+/* line 29, ../sass/main.scss */
+.content .post .body {
+  padding: 0 40px;
+}
+
+/* line 33, ../sass/main.scss */
+.gist {
+  width: 60%;
+}
