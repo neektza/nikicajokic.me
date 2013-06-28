@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "An attempt to explain type systems to myself (and others)"
+title: "An attempt to demistify type systems"
 date: 2013-06-27
-tags: programming compsci type-systems haskell ruby
+tags: compsci type-systems haskell ruby
 ---
 
-What?
+I've been reading **a lot** about type systems lately in addition to doing some hacking with Haskell. Needles to say, my ideas about ?? things started shifting.
 

@@ -3,7 +3,7 @@
 @import 'vars';
 
 html, body {
-	background-image:url('/res/img/bg/mooning.png')
+	background-image:url('/res/img/bg/cream_pixels.png')
 }
 
 .excerpt {
@@ -26,8 +26,12 @@ a:visited {
 	color: $alt2_color;
 }
 
-.content .post .body {
+.content .post {
 	padding: 0 40px;
+}
+
+.container {
+	margin-top: 50px;
 }
 
 .gist {

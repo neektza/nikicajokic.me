@@ -4,12 +4,11 @@
 	<body>
 		<div class="container">
 			<div class="site">
-				<div class="header">
-					{% include navigation.html %}
-				</div>
-
 				<div class="container row">
-					<div class="content small-12 columns panel radius">
+					<div class="navigation small-2 columns">	
+						{% include navigation_alt.html %}
+					</div>
+					<div class="content small-10 columns">
 						{{ content }}
 						{% include pagination.html %}
 					</div>

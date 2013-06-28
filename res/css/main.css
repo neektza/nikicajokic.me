@@ -6656,7 +6656,7 @@ a.th {
 
 /* line 5, ../sass/main.scss */
 html, body {
-  background-image: url("/res/img/bg/mooning.png");
+  background-image: url("/res/img/bg/cream_pixels.png");
 }
 
 /* line 9, ../sass/main.scss */
@@ -6685,11 +6685,16 @@ a:visited {
 }
 
 /* line 29, ../sass/main.scss */
-.content .post .body {
+.content .post {
   padding: 0 40px;
 }
 
 /* line 33, ../sass/main.scss */
+.container {
+  margin-top: 50px;
+}
+
+/* line 37, ../sass/main.scss */
 .gist {
   width: 60%;
 }

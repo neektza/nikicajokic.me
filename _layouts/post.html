@@ -4,9 +4,7 @@ layout: default
 <div class="post">
 <h2>{{ page.title }}<small class="meta"> : {{ page.date | date_to_string }}</small></h2>
 
-<div class="body">
 	<h3><small>Topics: {{ page.tags | array_to_sentence_string }}</small></h3>
 	{{ content }}
-</div>
 
 </div>
