@@ -424,7 +424,7 @@ table {
 /* line 246, ../../../../../../../usr/local/opt/rbenv/versions/2.0.0-p0/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.1/scss/foundation/components/_global.scss */
 html,
 body {
-  font-size: 100%;
+  font-size: 16px;
 }
 
 /* line 249, ../../../../../../../usr/local/opt/rbenv/versions/2.0.0-p0/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.1/scss/foundation/components/_global.scss */
@@ -6654,47 +6654,66 @@ a.th {
   max-width: 800px;
 }
 
-/* line 5, ../sass/main.scss */
+/* line 6, ../sass/main.scss */
+.clearfix {
+  *zoom: 1;
+}
+/* line 121, ../../../../../../../usr/local/opt/rbenv/versions/2.0.0-p0/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.1/scss/foundation/components/_global.scss */
+.clearfix:before, .clearfix:after {
+  content: " ";
+  display: table;
+}
+/* line 122, ../../../../../../../usr/local/opt/rbenv/versions/2.0.0-p0/lib/ruby/gems/2.0.0/gems/zurb-foundation-4.2.1/scss/foundation/components/_global.scss */
+.clearfix:after {
+  clear: both;
+}
+
+/* line 10, ../sass/main.scss */
 html, body {
-  background-image: url("/res/img/bg/cream_pixels.png");
+  background-image: url("/res/img/bg/binding_dark.png");
 }
 
-/* line 9, ../sass/main.scss */
-.excerpt {
-  margin-left: 15px;
+/* line 14, ../sass/main.scss */
+.site {
+  margin: 1em auto;
+  position: relative;
+  min-height: 100%;
+  width: 75%;
+  background-color: #FFFFFF;
+  -webkit-border-radius: 3px 3px;
+  -moz-border-radius: 3px / 3px;
+  border-radius: 3px / 3px;
 }
-
-/* line 13, ../sass/main.scss */
-li.github-link img {
+/* line 22, ../sass/main.scss */
+.site .top-bar {
+  background-color: #111111;
+  height: 48px;
+  -webkit-border-radius: 3px 3px;
+  -moz-border-radius: 3px / 3px;
+  border-radius: 3px / 3px;
+}
+/* line 27, ../sass/main.scss */
+.site .top-bar li.github-link img {
   padding-bottom: 6px;
 }
-
-/* line 17, ../sass/main.scss */
-li.linkedin-link img {
+/* line 31, ../sass/main.scss */
+.site .top-bar li.linkedin-link img {
   padding-bottom: 4px;
 }
-
-/* line 21, ../sass/main.scss */
-a {
-  color: #944648;
+/* line 35, ../sass/main.scss */
+.site .top-bar li.name {
+  padding-top: 2px;
 }
-
-/* line 25, ../sass/main.scss */
-a:visited {
-  color: #958847;
+/* line 39, ../sass/main.scss */
+.site .top-bar li.contact-link {
+  padding-top: 3px;
 }
-
-/* line 29, ../sass/main.scss */
-.content .post {
-  padding: 0 40px;
+/* line 44, ../sass/main.scss */
+.site .content {
+  position: relative;
+  padding: 1em 2em;
 }
-
-/* line 33, ../sass/main.scss */
-.container {
-  margin-top: 50px;
-}
-
-/* line 37, ../sass/main.scss */
-.gist {
-  width: 60%;
+/* line 48, ../sass/main.scss */
+.site .content .post {
+  padding: 0 3em 1em 3em;
 }

@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 <html>
-	{% include header.html %}
-	<body>
-		<div class="container">
-			<div class="site">
-				<div class="container row">
-					<div class="navigation small-2 columns">	
-						{% include navigation_alt.html %}
-					</div>
-					<div class="content small-10 columns">
-						{{ content }}
-						{% include pagination.html %}
-					</div>
-				</div>
-			</div>
+{% include header.html %}
+<body>
+	<div class="site">
+		<div class="content">
+			{% include navigation.html %}
+			{{ content }}
+			{% include pagination.html %}
 		</div>
-	</body>
-	{% include footer.html %}
+		<div class="clearfix"></div>
+	</div>
+</body>
+{% include footer.html %}
 </html>

@@ -1,39 +1,53 @@
 @import 'normalize';
+@import 'compass';
 @import 'foundation';
 @import 'vars';
 
+.clearfix {
+	@include clearfix()
+}
+
 html, body {
-	background-image:url('/res/img/bg/cream_pixels.png')
+	background-image:url('/res/img/bg/binding_dark.png')
 }
 
-.excerpt {
-	margin-left: 15px;
+.site {
+	margin: 1em auto;
+	position: relative;
+	min-height: 100%;
+	width: 75%;
+	background-color: #FFFFFF;
+	@include border-radius(3px, 3px);
+
+	.top-bar {
+		background-color: #111111;
+		height: 48px;
+		@include border-radius(3px, 3px);
+
+		li.github-link img {
+			padding-bottom: 6px;
+		}
+
+		li.linkedin-link img {
+			padding-bottom: 4px;
+		}
+
+		li.name {
+			padding-top: 2px;
+		}
+
+		li.contact-link {
+			padding-top: 3px;
+		}
+	}
+
+	.content {
+		position: relative;
+		padding: 1em 2em;
+
+		.post {
+			padding: 0 3em 1em 3em;
+		}
+	}
 }
 
-li.github-link img {
-	padding-bottom: 6px;
-}
-
-li.linkedin-link img {
-	padding-bottom: 4px;
-}
-
-a {
-	color: $alt1_color;
-}
-
-a:visited {
-	color: $alt2_color;
-}
-
-.content .post {
-	padding: 0 40px;
-}
-
-.container {
-	margin-top: 50px;
-}
-
-.gist {
-	width: 60%
-}
