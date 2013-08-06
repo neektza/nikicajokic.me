@@ -2,6 +2,7 @@
 layout: page
 permalink: /about/index.html
 title: About me
+description: "A short note about myself"
 ---
 
 Hi. My name is Nikica [^1]
