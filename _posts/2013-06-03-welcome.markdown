@@ -5,4 +5,4 @@ date: 2013-06-03
 tags: announcement
 ---
 
-Welcome to my blog. Have a nice stay :)
+Welcome to my blog. Have a nice stay.

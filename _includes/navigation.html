@@ -1,22 +1,23 @@
-<nav class="top-bar radius">
-	<ul class="title-area">
-		<li class="name"><h1><a href="/">{{ site.name }}</a></h1></li>
-	</ul>
+<div class="navigation-wrapper">
+	<nav role="navigation" id="site-nav" class="animated drop" itemscope itemtype="http://schema.org/SiteNavigationElement">
+	    <ul>
+	        {% for link in site.links %}
+			<li><a href="{{ site.url }}{{ link.url }}">{{ link.title }}</a></li>
+	        {% endfor %}
+	        <li><a href="{{ site.url }}/feed.xml" title="Atom/RSS feed"><i class="icon-rss"></i> Feed</a>
+	    </ul>
+	</nav>
+</div><!-- /.navigation-wrapper -->
 
-	<section class="top-bar-section">
-		<ul class="left">
-			<li class="divider"></li>
-			<li class="contact-link"><a  href="/about">about</a></li>
-			<li class="divider"></li>
-		</ul>
-		<ul class="right">
-			<li class="divider"></li>
-			<li class="linkedin-link"><a href="http://www.linkedin.com/in/nikicajokic"><img src="/res/img/logos/linkedin.png"></img></a></li>
-			<li class="divider"></li>
-			<li class="twitter-link"><a href="http://twitter.com/neektza"><img src="/res/img/logos/twitter.png"></a>
-			<li class="divider"></li>
-			<li class="github-link"><a href="http://github.com/neektza"><img src="/res/img/logos/github.png"></a></li>
-			<li class="divider"></li>
-		</ul>
-	</section>
-</nav>
+{% if page.image.feature %}<header class="masthead" itemscope itemtype="http://schema.org/Organization">
+	<div class="wrap">
+		<a href="{{ site.url }}" class="site-logo" rel="home" title="{{ site.title }}" itemprop="url"><img src="{{ site.url }}/images/{{ site.logo }}" width="200" height="200" alt="{{ site.title }} logo" class="animated bounceInDown" itemprop="logo"></a>
+	</div>
+</header><!-- /.masthead -->
+{% else %}<header class="masthead" itemscope itemtype="http://schema.org/Organization">
+	<div class="wrap">
+		<a href="{{ site.url }}" class="site-logo" rel="home" title="{{ site.title }}" itemprop="url"><img src="{{ site.url }}/images/{{ site.logo }}" width="200" height="200" alt="{{ site.title }} logo" class="animated fadeInUp" itemprop="logo"></a>
+		<h1 class="site-title animated fadeIn"><a href="{{ site.url }}">{{ site.title }}</a></h1>
+		<h2 class="site-description animated fadeIn" itemprop="description">{{ site.description }}</h2>
+	</div>
+</header><!-- /.masthead -->{% endif %}
