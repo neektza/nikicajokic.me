@@ -2,7 +2,6 @@
 layout: page
 permalink: /about/index.html
 title: About me
-tags: [about]
 ---
 
 Hi. My name is Nikica [^1]

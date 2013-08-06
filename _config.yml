@@ -42,7 +42,7 @@ pygments:    true
 markdown:    kramdown
 
 # https://github.com/mojombo/jekyll/wiki/Permalinks
-permalink:   /:categories/:title
+permalink: /:year/:month/:day/:title
 
 kramdown:
   auto_ids: true
@@ -59,4 +59,4 @@ kramdown:
     coderay_css: class
 
 include: [".htaccess"]
-exclude: ["lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.rb", "tmp", "less", "*.sublime-project", "*.sublime-workspace", "test", "spec"]
+exclude: ["vendor", "lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.rb", "tmp", "less", "*.sublime-project", "*.sublime-workspace", "test", "spec"]
