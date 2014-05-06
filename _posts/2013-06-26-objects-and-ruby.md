@@ -30,7 +30,7 @@ SomeServiceObject.new(foo).a_method
 
 <br/>
 
-In the example, we keep state in the object, when we could have simply passed an argument to the function. It is a trivial example sure, but I'm just using it to illustrate a point. This kind of code pops up all over the place in Ruby libraries, albeit more complex. Nevertheless, keeping functions in an object just because they operate on a certain kind of data is a bad pattern, in my opinion. 
+In the example, we keep state in the object, when we could have simply passed an argument to the function. It is a trivial example, for sure, but I'm just using it to illustrate a point. This kind of code pops up all over the place in Ruby libraries, albeit more complex. Nevertheless, keeping functions in an object just because they operate on a certain kind of data is a bad pattern, in my opinion. 
 
 I much prefer passing data to a function than invoking a method. If data is complex and consists of multiple components, then we could represent it with an object and keep only state/data related methods in that object. Independent, data processing functions should be kept out of the construct that represents data - i.e. object.
 
