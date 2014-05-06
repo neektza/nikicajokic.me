@@ -34,4 +34,4 @@ In the example, we keep state in the object, when we could have simply passed an
 
 I much prefer passing data to a function than invoking a method. If data is complex, and it consists of multiple components, we could then represent it with an object and keep only state/data related methods in that object. Independent, data processing functions should be kept out of the construct that represents data - i.e. object.
 
-On a related note, why should a function be an object (and in Ruby everything is), or be forced to reside in one (since event the global context is an object)? It should be a first-class citizen, like in Javascript, LISP or Haskell. Well, actually, in Javascript, a function is also an object, but at least it is a first class citizen without any special syntax for invocation.
+On a related note, why should a function be an object (and in Ruby everything is), or be forced to reside in one (since event the global context is an object)? It should be a first-class citizen, like in Javascript, LISP or Haskell. Well, actually, a function in Javascript is also an object, but at least it is a first class citizen without any special syntax for invocation.
