@@ -6,7 +6,7 @@ tags: programming ruby oop
 comments: true
 ---
 
-Not so recently I've become more and more frustrated with Ruby's object orientated nature. Specifically, that one needs to instantiate something just to use a few functions.
+Not so recently I've become more and more frustrated with Ruby's object orientated nature. Specifically, the fact that one needs to instantiate something just to use a few functions.
 
 I am not trying to say that it has to be done this way, because it mostly depends on style. However, it *is* the established norm in the Ruby/OOP world. *Service object* is the name of this idiom, I believe.
 
