@@ -1,6 +1,5 @@
 Recently, while doing homeworks for coursera 
 
-
 Ruby 1.9.2 (p320)
 -----------------
 
