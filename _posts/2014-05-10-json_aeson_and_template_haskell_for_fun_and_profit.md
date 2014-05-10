@@ -10,11 +10,13 @@ There are a few libraries that parse and encode JSON in Haskell, but one specifi
 
 [Aeson](http://hackage.haskell.org/package/aeson) performs better than it's older relative [JSON](http://hackage.haskell.org/package/json), all while simplifying implementation of encoding/decoding functions by using Template Haskell.
 
-Since all this awesome knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entitities in the following examples. Consequently, we have an ```Event``` type, that we get by querying *[/2/events](https://gist.github.com/neektza/d50ee5f749f985d65412#file-event-json)* API endpoint, and a ```RSVP``` type, which we get from the *[/2/rsvps](https://gist.github.com/neektza/d50ee5f749f985d65412#file-rsvp-json)* API endpoint.
+Since all this imposing knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entitities in the following examples. Consequently, we have an ```Event``` type, that we get by querying the */2/events*  API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-event-json)), and a ```RSVP``` type, which we get from the */2/rsvps* API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-rsvp-json)).
 
 # Hard labour
 
-First, here's an example of manually implementing a ```FromJSON``` instance for an ```Event``` type.
+The regular way to parse JSON with Aeson is to implement a ```FromJSON``` instance for the data type we want to build from JSON. It tells Aeson what fields to pluck from JSON and how to translate those fields to a Haskell construct. Inversely, if we wanted to encode a type to JSON, we'd have to implement a ```ToJSON``` instance.
+
+Here's an example of manually implementing a ```FromJSON``` instance for an ```Event``` type.
 
 {% gist neektza/d50ee5f749f985d65412 Event.hs %}
 
@@ -46,6 +48,10 @@ Reduce bolierplate wherever possible, since the tools to do it are already there
 
 In some future post I'll try to figure out Template Haskell and explain it in an approachable way.
 
+P.S.
+
+If anyone can explain what does ["A continuation-based parser type."](https://hackage.haskell.org/package/aeson-0.7.0.3/docs/Data-Aeson-Types.html#t:Parser) mean, I'd be happy to hear it out.
+
 ---
-[^1]: He also made the awesome [Wreq](http://hackage.haskell.org/package/wreq) HTTP library.
-[^2]: You can find it over at [Github](http://github.com/neetkza/hs_meetup)
+[^1]: You should also check out the awesome [Wreq](http://hackage.haskell.org/package/wreq) HTTP library he made.
+[^2]: You can find it over at [Github](https://github.com/neektza/hs_meetup)
