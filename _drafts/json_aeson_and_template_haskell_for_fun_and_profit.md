@@ -4,11 +4,11 @@ title: "JSON, Aeson and Template Haskell for fun and profit"
 tags: haskell json
 ---
 
-Handling JSON can look dificult in Haskell at times, but it's not so, once you get the hang of it (as with everything really).
+Handling JSON can look difficult in Haskell at times, but it's not so, once you get the hang of it (as with everything really).
 
 There are a few libraries that parse and encode JSON in Haskell, but one specifically gained a lot of popularity recently, and for good reason. The library in question is Bryan O'Sullivan's [^1] Aeson.
 
-[Aeson](http://hackage.haskell.org/package/aeson) performs better than it's older relative [JSON](http://hackage.haskell.org/package/json), all while simplifing creation of parsing/encoding functions by using Template Haskell.
+[Aeson](http://hackage.haskell.org/package/aeson) performs better than it's older relative [JSON](http://hackage.haskell.org/package/json), all while simplifying creation of parsing/encoding functions by using Template Haskell.
 
 Since all this awesome knowledge came out of an effort to build a *Meetup.com* client library [^2] in Haskell, we'll be dealing with Meetup.com entitities. Consequently, we have an ```Event``` type, that we get by querying *[/2/events](https://gist.github.com/neektza/d50ee5f749f985d65412#file-event-json)* API endpoint, and a ```RSVP``` type, which we get from the *[/2/rsvps](https://gist.github.com/neektza/d50ee5f749f985d65412#file-rsvp-json)* API endpoint.
 
@@ -20,7 +20,7 @@ First, here's an example of manually implementing a FromJSON typeclass for an Ev
 
 You can load the file into the GHCi REPL with ```$ ghci src/Types/Event.hs``` and see what the ```sampleEvent``` spits out, if you're interested.
 
-As you can see, following the ```Event``` type definition, there's a definition of the ```parseJSON``` function, and it looks like the ```parseJSON``` definition could be categorized as boilerplate code. Why? Because each time we add or remove a record field in the ```Event``` data constructor, we also need to change the ```parseJSON``` definition acordingly.
+As you can see, following the ```Event``` type definition, there's a definition of the ```parseJSON``` function, and it looks like the ```parseJSON``` definition could be categorized as boilerplate code. Why? Because each time we add or remove a record field in the ```Event``` data constructor, we also need to change the ```parseJSON``` definition accordingly.
 
 Not only that, but if there had been a ```ToJSON``` definition in the example above, we'd have to change it also. Now stretch your imagination for second and imagine if we had more than one type. It seems this could get out of hand very quickly (luckily, we have the type system to warn us about that, but it would still be annoying).
 
