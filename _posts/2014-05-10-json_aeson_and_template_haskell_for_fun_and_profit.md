@@ -2,6 +2,7 @@
 layout: post
 title: "JSON, Aeson and Template Haskell for fun and profit"
 tags: haskell json
+comments: true
 ---
 
 Handling JSON can look difficult in Haskell at times, but it's not so, once you get the hang of it (as with everything really).
