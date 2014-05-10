@@ -24,11 +24,11 @@ You can load the file into the GHCi REPL with ```$ ghci src/Types/Event.hs``` an
 
 As you can see, following the ```Event``` type definition, there's a definition of the ```parseJSON``` function, and it looks like the ```parseJSON``` definition could be categorized as boilerplate code. Why? Because each time we add or remove a record field in the ```Event``` data constructor, we also need to change the ```parseJSON``` definition accordingly.
 
-Not only that, but if there had been a ```ToJSON``` definition in the example above, we'd have to change it also. Now stretch your imagination for second and imagine if we had more than one type. It seems that this could get out of hand very quickly (luckily, we have the type system to warn us about that, but it would still be annoying).
+Not only that, but if there had been a ```ToJSON``` definition in the example above, we'd have to change it as well Now stretch your imagination for a second and imagine if we had more than one type. It seems that this could get out of hand very quickly (luckily, we have the type system to warn us about that, but it would still be annoying).
 
 # Making the GHC work for you
 
-Feeling tired after all the hard work we had to do previously, it kinda' made us wonder if there's an easier way to do this... Turns out there is, and it's called Template Haskell (called TH by friends).
+Feeling tired after all the hard work we had to do previously, it kinda of made us wonder if there's an easier way to do this... Turns out there is, and it's called Template Haskell (called TH by friends).
 
 I won't go into the *whats* and the *hows* of TH (mainly since I myself don't completely understand it yet), but you can think of it as Lisp's macro system but with types, because everything is better with some types.
 
@@ -38,7 +38,7 @@ Long story short, using the ```Data.Aeson.TH``` package we can make the GHC defi
 
 As before, you can load up the code into GHCi with ```$ ghci src/Types/Event.hs``` and check the result by calling ```sampleRSVP```.
 
-What we can see in the example above, is even though there is no ```fromJSON``` definition, we're still able to decode the ByteString to JSON. We still need to import Data.Aeson to have access to the ```decode``` function.
+We can see in the example above that, even though there is no ```fromJSON``` definition, we're still able to decode the ```ByteString``` to JSON. We still need to import ```Data.Aeson``` to have access to the ```decode``` function.
 
 Not much convincing is needed to see that this approach is much better than the previous one. Once ```Event``` or ```RSVP``` types change, GHC changes the ```FromJSON``` and ```ToJSON``` definitions for us.
 
