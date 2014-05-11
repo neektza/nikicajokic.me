@@ -15,23 +15,23 @@ Since all this imposing knowledge came out of an effort to build a *Meetup* API 
 
 # Hard labour
 
-The regular way to parse JSON with Aeson is to implement a ```FromJSON``` instance for the data type we want to build from JSON. It tells Aeson what fields to pluck from JSON and how to translate those fields to a Haskell construct. Inversely, if we wanted to encode a type to JSON, we'd have to implement a ```ToJSON``` instance.
+The regular way to parse JSON with Aeson is to implement a ```FromJSON``` instance for the data type we want to build from JSON. It tells Aeson what JSON fields to pluck from and how to translate those fields to a Haskell construct. Inversely, if we wanted to encode a type to JSON, we'd have to implement a ```ToJSON``` instance.
 
 Here's an example of manually implementing a ```FromJSON``` instance for an ```Event``` type.
 
 {% gist neektza/d50ee5f749f985d65412 Event.hs %}
 
-You can load the file into the GHCi REPL with ```$ ghci src/Types/Event.hs``` and see what the ```sampleEvent``` spits out, if you're interested.
+If you are interested, you can load the file into the GHCi REPL with ```$ ghci src/Types/Event.hs``` and see what the ```sampleEvent``` spits out.
 
 As you can see, following the ```Event``` type definition, there's a definition of the ```parseJSON``` function, and it looks like the ```parseJSON``` definition could be categorized as a boilerplate code. Why? Because each time we add or remove a record field in the ```Event``` data constructor, we also need to change the ```parseJSON``` definition accordingly.
 
-Not only that, but if there had been a ```ToJSON``` definition in the example above, we'd have to change it as well Now, stretch your imagination for a second and imagine if we had more than one type. It seems that this could get out of hand very quickly (luckily, we have the type system to warn us about that, but it would still be annoying).
+There is more. If there had been a ```ToJSON``` definition in the example above, we'd have to change it as well Now, stretch your imagination for a second and imagine we had more than one type. It seems that this could get out of hand very quickly (luckily, we have the type system to warn us about that, but it would still be annoying).
 
 # Making the GHC work for you
 
 Feeling tired after all the hard work we had to do previously, it kind of made us wonder if there's an easier way to do this... Turns out there is, and it's called Template Haskell (called TH by friends).
 
-I won't go into the *whats* and the *hows* of TH (mainly since I myself don't completely understand it yet), but you can think of it as Lisp's macro system but with types, because everything is better with some types.
+I won't go into the *whats* and the *hows* of TH (mainly since I myself don't completely understand it yet), but you can think of it as Lisp's macro system but with types. Because everything is better with some types.
 
 Long story short, using the ```Data.Aeson.TH``` package we can make the GHC define the FromJSON and ToJSON instances at compile-time for us, and this is how:
 
