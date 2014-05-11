@@ -11,7 +11,7 @@ There are a few libraries that parse and encode JSON in Haskell, but one specifi
 
 [Aeson](http://hackage.haskell.org/package/aeson) performs better than its older relative [JSON](http://hackage.haskell.org/package/json), all while simplifying the implementation of encoding/decoding functions by using Template Haskell.
 
-Since all this imposing knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entities in the following examples. Consequently, we have an ```Event``` type, that we get by querying the */2/events*  API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-event-json)), and an ```RSVP``` type, which we get from the */2/rsvps* API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-rsvp-json)).
+Since all this imposing knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entities in the following examples. Consequently, we have an ```Event``` type that we get by querying the */2/events*  API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-event-json)), and an ```RSVP``` type, which we get from the */2/rsvps* API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-rsvp-json)).
 
 # Hard labour
 
@@ -25,7 +25,7 @@ You can load the file into the GHCi REPL with ```$ ghci src/Types/Event.hs``` an
 
 As you can see, following the ```Event``` type definition, there's a definition of the ```parseJSON``` function, and it looks like the ```parseJSON``` definition could be categorized as a boilerplate code. Why? Because each time we add or remove a record field in the ```Event``` data constructor, we also need to change the ```parseJSON``` definition accordingly.
 
-Not only that, but if there had been a ```ToJSON``` definition in the example above, we'd have to change it as well Now stretch your imagination for a second and imagine if we had more than one type. It seems that this could get out of hand very quickly (luckily, we have the type system to warn us about that, but it would still be annoying).
+Not only that, but if there had been a ```ToJSON``` definition in the example above, we'd have to change it as well Now, stretch your imagination for a second and imagine if we had more than one type. It seems that this could get out of hand very quickly (luckily, we have the type system to warn us about that, but it would still be annoying).
 
 # Making the GHC work for you
 
@@ -51,7 +51,7 @@ In some future post I'll try to figure out Template Haskell and explain it in an
 
 P.S.
 
-If anyone can explain what does ["A continuation-based parser type."](https://hackage.haskell.org/package/aeson-0.7.0.3/docs/Data-Aeson-Types.html#t:Parser) mean, I'd be happy to hear it out.
+If anyone can explain what ["A continuation-based parser type."](https://hackage.haskell.org/package/aeson-0.7.0.3/docs/Data-Aeson-Types.html#t:Parser) means, I'd be happy to hear it out.
 
 ---
 [^1]: You should also check out the awesome [Wreq](http://hackage.haskell.org/package/wreq) HTTP library he made.
