@@ -7,11 +7,11 @@ comments: true
 
 At times, handling JSON in Haskell might seem difficult, but you will definitely change your mind once you get the hang of it.
 
-There are a few libraries that parse and encode JSON in Haskell, but one specifically gained a lot of popularity recently, and for good reason. The library in question is Bryan O'Sullivan's [^1] Aeson.
+There are a few libraries that parse and encode JSON in Haskell, but one specifically gained a lot of popularity recently, and for a good reason. The library in question is Bryan O'Sullivan's [^1] Aeson.
 
-[Aeson](http://hackage.haskell.org/package/aeson) performs better than it's older relative [JSON](http://hackage.haskell.org/package/json), all while simplifying implementation of encoding/decoding functions by using Template Haskell.
+[Aeson](http://hackage.haskell.org/package/aeson) performs better than it's older relative [JSON](http://hackage.haskell.org/package/json), all while simplifying the implementation of encoding/decoding functions by using Template Haskell.
 
-Since all this imposing knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entitities in the following examples. Consequently, we have an ```Event``` type, that we get by querying the */2/events*  API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-event-json)), and a ```RSVP``` type, which we get from the */2/rsvps* API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-rsvp-json)).
+Since all this imposing knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entitities in the following examples. Consequently, we have an ```Event``` type, that we get by querying the */2/events*  API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-event-json)), and an ```RSVP``` type, which we get from the */2/rsvps* API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-rsvp-json)).
 
 # Hard labour
 
@@ -23,7 +23,7 @@ Here's an example of manually implementing a ```FromJSON``` instance for an ```E
 
 You can load the file into the GHCi REPL with ```$ ghci src/Types/Event.hs``` and see what the ```sampleEvent``` spits out, if you're interested.
 
-As you can see, following the ```Event``` type definition, there's a definition of the ```parseJSON``` function, and it looks like the ```parseJSON``` definition could be categorized as boilerplate code. Why? Because each time we add or remove a record field in the ```Event``` data constructor, we also need to change the ```parseJSON``` definition accordingly.
+As you can see, following the ```Event``` type definition, there's a definition of the ```parseJSON``` function, and it looks like the ```parseJSON``` definition could be categorized as a boilerplate code. Why? Because each time we add or remove a record field in the ```Event``` data constructor, we also need to change the ```parseJSON``` definition accordingly.
 
 Not only that, but if there had been a ```ToJSON``` definition in the example above, we'd have to change it as well Now stretch your imagination for a second and imagine if we had more than one type. It seems that this could get out of hand very quickly (luckily, we have the type system to warn us about that, but it would still be annoying).
 
