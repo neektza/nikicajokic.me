@@ -9,9 +9,9 @@ At times, handling JSON in Haskell might seem difficult, but you will definitely
 
 There are a few libraries that parse and encode JSON in Haskell, but one specifically gained a lot of popularity recently, and for a good reason. The library in question is Bryan O'Sullivan's [^1] Aeson.
 
-[Aeson](http://hackage.haskell.org/package/aeson) performs better than it's older relative [JSON](http://hackage.haskell.org/package/json), all while simplifying the implementation of encoding/decoding functions by using Template Haskell.
+[Aeson](http://hackage.haskell.org/package/aeson) performs better than its older relative [JSON](http://hackage.haskell.org/package/json), all while simplifying the implementation of encoding/decoding functions by using Template Haskell.
 
-Since all this imposing knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entitities in the following examples. Consequently, we have an ```Event``` type, that we get by querying the */2/events*  API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-event-json)), and an ```RSVP``` type, which we get from the */2/rsvps* API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-rsvp-json)).
+Since all this imposing knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entities in the following examples. Consequently, we have an ```Event``` type, that we get by querying the */2/events*  API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-event-json)), and an ```RSVP``` type, which we get from the */2/rsvps* API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-rsvp-json)).
 
 # Hard labour
 
@@ -29,7 +29,7 @@ Not only that, but if there had been a ```ToJSON``` definition in the example ab
 
 # Making the GHC work for you
 
-Feeling tired after all the hard work we had to do previously, it kinda of made us wonder if there's an easier way to do this... Turns out there is, and it's called Template Haskell (called TH by friends).
+Feeling tired after all the hard work we had to do previously, it kind of made us wonder if there's an easier way to do this... Turns out there is, and it's called Template Haskell (called TH by friends).
 
 I won't go into the *whats* and the *hows* of TH (mainly since I myself don't completely understand it yet), but you can think of it as Lisp's macro system but with types, because everything is better with some types.
 
@@ -45,7 +45,7 @@ Not much convincing is needed to see that this approach is much better than the 
 
 # Conclusion
 
-Reduce bolierplate wherever possible, since the tools to do it are already there. You'll be happier and your general well-being will improve.
+Reduce boilerplate wherever possible, since the tools to do it are already there. You'll be happier and your general well-being will improve.
 
 In some future post I'll try to figure out Template Haskell and explain it in an approachable way.
 
