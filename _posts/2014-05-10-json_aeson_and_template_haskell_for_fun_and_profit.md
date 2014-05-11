@@ -5,7 +5,7 @@ tags: haskell json
 comments: true
 ---
 
-Handling JSON can look difficult in Haskell at times, but it's not so, once you get the hang of it (as with everything really).
+At times, handling JSON in Haskell can seem difficult, but you will definitely change your mind once you get the hang of it.
 
 There are a few libraries that parse and encode JSON in Haskell, but one specifically gained a lot of popularity recently, and for good reason. The library in question is Bryan O'Sullivan's [^1] Aeson.
 
