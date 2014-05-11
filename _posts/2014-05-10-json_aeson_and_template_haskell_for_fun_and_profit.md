@@ -7,17 +7,17 @@ comments: true
 
 At times, handling JSON in Haskell might seem difficult, but you will definitely change your mind once you get the hang of it.
 
-There are a few libraries that parse and encode JSON in Haskell, but one specifically gained a lot of popularity recently, and for a good reason. The library in question is Bryan O'Sullivan's [^1] Aeson.
+There are a few libraries that parse and encode JSON in Haskell, but recently one particular has gained a lot of popularity, and for a good reason. The library in question is Bryan O'Sullivan's [^1] Aeson.
 
 [Aeson](http://hackage.haskell.org/package/aeson) performs better than its older relative [JSON](http://hackage.haskell.org/package/json), all while simplifying the implementation of encoding/decoding functions by using Template Haskell.
 
-Since all this imposing knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entities in the following examples. Consequently, we have an ```Event``` type that we get by querying the */2/events*  API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-event-json)), and an ```RSVP``` type, which we get from the */2/rsvps* API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-rsvp-json)).
+Since all this imposing knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entities in the following examples. Consequently, we have an ```Event``` type that was obtained by querying the */2/events*  API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-event-json)), and an ```RSVP``` type, which we get from the */2/rsvps* API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-rsvp-json)).
 
 # Hard labour
 
 The regular way to parse JSON with Aeson is to implement a ```FromJSON``` instance for the data type we want to build from JSON. It tells Aeson what JSON fields to pluck from and how to translate those fields to a Haskell construct. Inversely, if we wanted to encode a type to JSON, we'd have to implement a ```ToJSON``` instance.
 
-Here's an example of manually implementing a ```FromJSON``` instance for an ```Event``` type.
+Here's an example of how to manually implement a ```FromJSON``` instance for an ```Event``` type.
 
 {% gist neektza/d50ee5f749f985d65412 Event.hs %}
 
@@ -25,11 +25,10 @@ If you are interested, you can load the file into the GHCi REPL with ```$ ghci s
 
 As you can see, following the ```Event``` type definition, there's a definition of the ```parseJSON``` function, and it looks like the ```parseJSON``` definition could be categorized as a boilerplate code. Why? Because each time we add or remove a record field in the ```Event``` data constructor, we also need to change the ```parseJSON``` definition accordingly.
 
-There is more. If there had been a ```ToJSON``` definition in the example above, we'd have to change it as well Now, stretch your imagination for a second and imagine we had more than one type. It seems that this could get out of hand very quickly (luckily, we have the type system to warn us about that, but it would still be annoying).
-
+There is more. If the example above contained a ```ToJSON``` definition, we'd have to change it as well. Now, stretch your imagination for a second and imagine we had more than one type. This situation could get out of hand very quickly and even though the type system can inform us of it, it would still be annoying.
 # Making the GHC work for you
 
-Feeling tired after all the hard work we had to do previously, it kind of made us wonder if there's an easier way to do this... Turns out there is, and it's called Template Haskell (called TH by friends).
+Feeling tired after all the hard work we had to do previously, it kind of makes us wonder if there's an easier way to do this... Turns out there is, and it's called Template Haskell (called TH by friends).
 
 I won't go into the *whats* and the *hows* of TH (mainly since I myself don't completely understand it yet), but you can think of it as Lisp's macro system but with types. Because everything is better with some types.
 
@@ -41,7 +40,7 @@ As before, you can load up the code into GHCi with ```$ ghci src/Types/Event.hs`
 
 We can see in the example above that, even though there is no ```fromJSON``` definition, we're still able to decode the ```ByteString``` to JSON. We still need to import ```Data.Aeson``` to have access to the ```decode``` function.
 
-Not much convincing is needed to see that this approach is much better than the previous one. Once ```Event``` or ```RSVP``` types change, GHC changes the ```FromJSON``` and ```ToJSON``` definitions for us.
+Not much convincing is needed to see that this approach is much better than the previous one. Once ```Event``` or ```RSVP``` types change, GHC changes the ```FromJSON``` and ```ToJSON``` definitions at our demand.
 
 # Conclusion
 
