@@ -26,6 +26,7 @@ If you are interested, you can load the file into the GHCi REPL with ```$ ghci s
 As you can see, following the ```Event``` type definition, there's a definition of the ```parseJSON``` function, and it looks like the ```parseJSON``` definition could be categorized as a boilerplate code. Why? Because each time we add or remove a record field in the ```Event``` data constructor, we also need to change the ```parseJSON``` definition accordingly.
 
 There is more. If the example above contained a ```ToJSON``` definition, we'd have to change it as well. Now, stretch your imagination for a second and imagine we had more than one type. This situation could get out of hand very quickly and even though the type system can inform us of it, it would still be annoying.
+
 # Making the GHC work for you
 
 Feeling tired after all the hard work we had to do previously, it kind of makes us wonder if there's an easier way to do this... Turns out there is, and it's called Template Haskell (called TH by friends).
