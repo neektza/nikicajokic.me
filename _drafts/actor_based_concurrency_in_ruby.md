@@ -2,6 +2,7 @@
 layout: post
 title: "Actor based concurrency in Ruby"
 tags: concurrency ruby celluloid
+comments: true
 ---
 
 <blockquote>
