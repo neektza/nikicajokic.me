@@ -1,3 +1,3 @@
-task :deploy do
-  sh 'jekyll build && rsync -r _site neektza@95.85.18.108:/var/www/pltconfusion.com'
+task :deplo do
+  sh 'jekyll build && rsync -r _site neektza@188.226.242.123:~/www/pltconfusion.com'
 end
