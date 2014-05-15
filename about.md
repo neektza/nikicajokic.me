@@ -14,5 +14,3 @@ This is the page where stuff that peaks my curiosity will end up. Knowing myself
 If you want to know more, you can look me up on various social networks (links below).
 
 Also, you can email me at \{\{ my_twitter_handle }} @ gmail.com
-
----
