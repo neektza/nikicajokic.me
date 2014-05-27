@@ -5,6 +5,7 @@ tags: concurrency ruby celluloid
 comments: true
 ---
 
+Zast serete? 
 <blockquote>
 In computer science, concurrency is a property of systems in which several computations are executing simultaneously, and potentially interacting with each other.
 </blockquote>
