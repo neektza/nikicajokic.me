@@ -6,6 +6,7 @@ comments: true
 compsci: true
 ---
 
+Zast serete? 
 <blockquote>
 Let it crash
 </blockquote>
