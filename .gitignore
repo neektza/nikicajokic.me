@@ -1,1 +1,7 @@
-.DS_Store.bundle/_site/_images/.sass_cache
+.DS_Store
+assets/css/main.min.css
+assets/js/scripts.min.js
+.bundle/
+_site/
+_images/
+.sass_cache
