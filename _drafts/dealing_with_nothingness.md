@@ -2,6 +2,7 @@
 layout: post
 title: "Dealing with nothingness"
 tags: ruby error-handling
+compsci: true
 ---
 
 Lets start this off with a couple of questions and try to answer them as we go:
