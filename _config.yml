@@ -1,5 +1,4 @@
 title:            PLT Confusion
-description:      Programming languages, mostly.
 logo:             lambda-logo.png
 disqus_shortname: pltconfusion
 url:              http://pltconfusion.com
@@ -15,25 +14,18 @@ owner:
   github: neektza
   stackexchange: http://stackexchange.com/users/442780/neektza 
   linkedin: nikicajokic
-  instagram:
-  flickr:
-  tumblr:
-  # For Google Authorship https://plus.google.com/authorship
-  google_plus:    
 
 # Analytics and webmaster tools stuff goes here
 google_analytics: UA-41474479-1
 google_verify:
-# https://ssl.bing.com/webmaster/configure/verify/ownership Option 2 content= goes here
-bing_verify:
 
 # Links to include in top navigation
 # For external links add external: true
 links:
+  - title: Articles
+    url: /
   - title: About
     url: /about
-  - title: Articles
-    url: /articles
 
 # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 timezone:    Europe/Zagreb
@@ -59,4 +51,4 @@ kramdown:
     coderay_css: class
 
 include: [".htaccess"]
-exclude: ["vendor", "lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.rb", "tmp", "less", "*.sublime-project", "*.sublime-workspace", "test", "spec"]
+exclude: ["node_modules", "vendor", "lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.rb", "tmp", "less", "*.sublime-project", "*.sublime-workspace", "test", "spec"]
