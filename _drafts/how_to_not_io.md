@@ -2,6 +2,7 @@
 layout: post
 title: "How to not IO"
 tags: haskell io
+published: true
 ---
 
 Let say we're building an API client library in Haskell. It has to abstract away all the gory details of making requests to certain API endpoints and has to get the data back in the form of a nice type. If we were building a library for accessing Meetup.com data, for example, we would need to abstract the process of getting "Events" from "api.meetup.com/2/events".

@@ -3,6 +3,7 @@ layout: post
 title: "Objects and Ruby"
 tags: programming ruby oop
 comments: true
+published: true
 ---
 
 <blockquote>
