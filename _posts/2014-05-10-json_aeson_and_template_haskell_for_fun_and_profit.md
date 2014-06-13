@@ -12,7 +12,7 @@ There are a few libraries that parse and encode JSON in Haskell, but recently on
 
 [Aeson](http://hackage.haskell.org/package/aeson) performs better than its older relative [JSON](http://hackage.haskell.org/package/json), all while simplifying the implementation of encoding/decoding functions by using Template Haskell.
 
-Since all this imposing knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entities in the following examples. Consequently, we have an ```Event``` type that was obtained by querying the */2/events*  API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-event-json)), and an ```RSVP``` type, which we get from the */2/rsvps* API endpoint (example [response](https://gist.github.com/neektza/d50ee5f749f985d65412#file-rsvp-json)).
+Since all this imposing knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entities in the following examples. Consequently, we have an ```Event``` type that was obtained by querying the */2/events*  API endpoint (example [response](https://gist.github.com/neektza/f76e8a44267a669f564a#file-event-json)), and an ```RSVP``` type, which we get from the */2/rsvps* API endpoint (example [response](https://gist.github.com/neektza/f76e8a44267a669f564a#file-rsvp-json)).
 
 # Hard labour
 
@@ -20,7 +20,7 @@ The regular way to parse JSON with Aeson is to implement a ```FromJSON``` instan
 
 Here's an example of how to manually implement a ```FromJSON``` instance for an ```Event``` type.
 
-{% gist neektza/d50ee5f749f985d65412 Event.hs %}
+{% gist neektza/f76e8a44267a669f564a Event.hs %}
 
 If you are interested, you can load the file into the GHCi REPL with ```$ ghci src/Types/Event.hs``` and see what the ```sampleEvent``` spits out.
 
@@ -36,7 +36,7 @@ I won't go into the *whats* and the *hows* of TH (mainly since I myself don't co
 
 Long story short, using the ```Data.Aeson.TH``` package we can make the GHC define the FromJSON and ToJSON instances at compile-time for us, and this is how:
 
-{% gist neektza/d50ee5f749f985d65412 RSVP.hs %}
+{% gist neektza/f76e8a44267a669f564a RSVP.hs %}
 
 As before, you can load up the code into GHCi with ```$ ghci src/Types/Event.hs``` and check the result by calling ```sampleRSVP```.
 
