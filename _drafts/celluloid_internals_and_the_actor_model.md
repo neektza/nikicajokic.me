@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Ruby concurrency Pt3 - The Actor"
+title: "Celluloid internals and the actor model"
 tags: concurrency ruby eventmachine celluloid
 comments: true
 ---

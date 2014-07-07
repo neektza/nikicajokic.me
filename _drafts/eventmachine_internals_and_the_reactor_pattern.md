@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Ruby concurrency Pt2 - The Reactor"
+title: "EventMachine internals and the Reactor pattern"
 tags: concurrency ruby eventmachine celluloid
 comments: true
 ---

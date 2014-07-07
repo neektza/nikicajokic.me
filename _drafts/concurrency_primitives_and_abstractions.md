@@ -1,15 +1,15 @@
 ---
 layout: post
-title: "Ruby concurrency Pt1 - Primitives and Abstractions"
+title: "Concurrency primitives and abstractions"
 tags: concurrency ruby eventmachine celluloid
 comments: true
 ---
 
-This post is part one of a series on Ruby concurrency. Here's [part two](link) and [part three](link).
+*This the first post of a series on Ruby concurrency. Next up is a post about* [EventMachine internals](/2014/07/15/eventmachine_internals_and_the_reactor_pattern).
 
 ## Setting the stage
 
-For a while now, I've been part of a team that is building a somewhat complex web app in Ruby. In addtion with your conventional web app requirements, it has to connect to and keep open many simultaneous long-lived streaming connections towards third party data sources along with polling various REST APIs.
+For a while now, I've been part of a team that has been building a somewhat complex web app in Ruby. In addtion to  conventional web app requirements, it has to connect to and keep open many simultaneous long-lived streaming connections towards third party data sources along with polling various REST APIs.
 
 The big requirement that makes this interesting is the long-running process that must deal with many things at the same time. While not a particularly unusual problem it was a novelty because as web developers we mostly deal with request/response cylces and dont't have to manage long running processes. So, naturally, it took some time to recognize it's inherent concurrent nature and get the architecture right.
 
@@ -19,7 +19,7 @@ Ruby is not poor in language primitives dealing with concurrency. It has support
 
 In addition to threads, it has a [coroutine](http://www.ruby-doc.org/core-2.1.1/Fiber.html) implementation named "fibers"[^2]. The most important difference between threads and fibers is that threads depend on the scheduler to manage execution windows, and fibers are cooperative, meaning that being in a fiber, the programmer must explicitly yield execution to another one. As such they are a nice tool to handle concurrently happening things because they can be suspended and yielded to as priorities of handling those things change.
 
-Threads and fibers alone are enough to build sophisticated systems, and although you could build one using only these constructs, I think it's ill advised to do so. There are a couple of noteworthy higher-level concurrency constructs in Ruby that manage many of the common problems one comes across while building a concurrent system - synchronization of shared state, inter-thread messaging, etc.
+Threads and fibers alone are enough to build sophisticated systems, and although you could build one using only these constructs, I think it's ill advised to do so. There are a couple of noteworthy higher-level concurrency constructs in Ruby that manage many of the common problems one comes across while building a concurrent system - synchronization of shared state, cross-thread messaging, etc.
 
 ## Concurrency abstractions <small>(reactors and actors)</small>
 
@@ -43,7 +43,7 @@ Forutunately, alternatives exist, the most notable being Celluloid. Inspired by 
 
 Since Ruby is a "pure" OO language (everything is an object), model conceptualization is considerably easier when thinking in objects than in handlers and callbacks. So instead of relying on callbacks, Celluloid provides a way to build a model out of concurrently running objects that are able to talk among themselves - ie. **Actors**.
 
-Celluloid uses Threads internally to represent Actors, and Fibers to represent tasks[^3] (messages) that the actor processes. Since each task can be suspended, actors can process multiple messages and interleave them if needed. We focus on how it does this in the [3rd part](http://link.com) of the series.
+Celluloid uses Threads internally to represent Actors, and Fibers to represent tasks[^3] (messages) that the actor processes. Since each task can be suspended, actors can process multiple messages and interleave them if needed. We'll analyze and explain how it does that in a future post in the series.
 
 There's a nice intro on Celluloid's capabilities over at its github wiki [page](https://github.com/celluloid/celluloid/wiki). Besides that, there are many other examples and  Coelluloid tutorials on the interwebz, but I recommend [this](https://practicingruby.com/articles/gentle-intro-to-actor-based-concurrency) one in particular because it even implements a minimal actor system at the end.
 
