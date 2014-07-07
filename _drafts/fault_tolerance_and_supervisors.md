@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Ruby concurrency Pt2 - Supervisors and Fault Tolerance"
+title: "Supervisors and Fault Tolerance"
 tags: concurrency ruby eventmachine celluloid
 comments: true
 ---
