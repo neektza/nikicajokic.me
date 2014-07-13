@@ -7,9 +7,7 @@ comments: true
 
 ## Setting the stage
 
-For a while now, our team has been building a somewhat complex web app in Ruby. In addition to conventional web app requirements, this app has to connect to and keep open many simultaneous long-lived streaming connections towards third party data sources along with polling various REST APIs.
-
-The big requirement that makes this problem interesting is the long-running process that must deal with many "actions" at the same time. While not a particularly unusual problem it was a novelty because as web developers we mostly deal with request/response cycles and don't have to manage long running processes. So, naturally, it took us some time to recognize its inherent concurrent nature and get the architecture right.
+For a while now, I've been a part of team that has been building a somewhat complex web app in Ruby. In addition to conventional web app requirements, this app has to connect to and keep open many simultaneous long-lived streaming connections towards third party data sources along with polling various REST APIs. Recongnizing the inherent concurrent nature of the problem domain, I decided to finally gain a clear understanding of the finer details of Ruby's concurrency primitives and abstractions. This one and the next few posts will deal with these topics and attempt to dispel confusion any potential readers may have about them.
 
 ## Concurrency primitives <small>(threads and fibers)</small>
 
@@ -51,12 +49,12 @@ Let's now build the producer and the consumer using threads.
   require 'thread'
   require_relative 'add_one_task'
   scheduled = []; performed = []; producers = []; consumers = []
-  10.times do
+  5.times do
     producers << Thread.new do
       scheduled.push AddOneTask.new
     end
   end
-  10.times do
+  5.times do
     consumers << Thread.new do
       loop do
         task = scheduled.pop
@@ -68,9 +66,24 @@ Let's now build the producer and the consumer using threads.
   (producers + consumers).each { |t| t.join }
 {% endhighlight %}
 
+{% highlight bash %}
+lappy :: sandbox/ruby/concurrency > ruby producer_consumer_threads.rb
+Scheduling task
+Scheduling task
+Scheduling task
+Scheduling task
+Task performed, state 1
+Task performed, state 2
+Scheduling task
+Task performed, state 3
+Task performed, state 4
+Task performed, state 5
+All threads dead? true
+{% endhighlight %}
+
 A few notes about the example above:
 
-* each run of the example will produce different results because we don't control thread scheduling,
+* shown output is only one of many possible outputs since each run of the example will produce different results (we don't control thread scheduling),
 * race conditions are possible and indeed are present in the example (pushing and popping are not thread-safe operations in a regular Ruby array[^4]).
 
 Next up, the fiber implementation of the pattern.
@@ -79,32 +92,47 @@ Next up, the fiber implementation of the pattern.
   require 'fiber'
   require_relative 'add_one_task'
   scheduled = []; performed = []
-  consumer  = nil; consumers = []; consumer_scheduler = nil
+  consumers = []; scheduler = nil
   producer = Fiber.new do
-    10.times do
+    5.times do
       scheduled.push AddOneTask.new
-      consumer_scheduler.transfer
+      scheduler.transfer
     end
   end
-  10.times do
+  5.times do
     consumers << Fiber.new do
       task = scheduled.pop
       performed << task.perform unless task.nil?
+      Fiber.yield
+    end
+  end
+  scheduler = Fiber.new do
+    consumers.each do |c|
+      c.resume
       producer.transfer
     end
   end
-  consumer_scheduler = Fiber.new do
-    consumers.each do |c|
-      c.resume
-    end
-  end
   producer.resume
-  puts "All consumers dead? #{consumers.reduce(true) {|acc,c| acc && c.alive?}}"
 {% endhighlight %}
 
-In contrast to the previous example, fibers need explicit scheduling. We explicitly transfer control from one fiber to another by using ```fiber.transfer```, ```fiber.resume``` and ```Fiber.yield```. In the example above we have a ping-pong transfer of control between the ```producer``` and the ```scheduler```. Whenever the ```scheduler``` gets the execution back, it picks a ```consumer``` to run. Even though they are harder to produce since we have control over execution, race conditions in Fiber-based code are still possible (one example being [this](https://gist.github.com/raggi/1220800)).
+{% highlight bash %}
+lappy :: sandbox/ruby/concurrency > ruby producer_consumer_fibers.rb
+Scheduling task
+Task performed, state 1
+Scheduling task
+Task performed, state 2
+Scheduling task
+Task performed, state 3
+Scheduling task
+Task performed, state 4
+Scheduling task
+Task performed, state 5
+All fibers dead? true
+{% endhighlight %}
 
-Considering the simplicity of the implementations above, it seems that threads and fibers alone are enough to build sophisticated systems, and although you could certainly build one using only these constructs, it's ill-advised to do so. There are a couple of noteworthy higher-level concurrency constructs in Ruby worth considering that solve many of the common problems one comes across while building a concurrent system - synchronization of shared state, cross-thread messaging, etc.
+In contrast to the previous example, fibers need explicit scheduling (even starting them needs to be explicit). We explicitly transfer control from one fiber to another by using ```fiber.transfer```, ```fiber.resume``` and ```Fiber.yield```. In the example above we have a pingpong-like transfer of control between the ```producer``` and the ```scheduler```. Whenever the ```scheduler``` gets the execution back, it picks a ```consumer``` to run. Even though they are harder to produce since we have control over execution, race conditions in Fiber-based code are still possible (one example being [this](https://gist.github.com/raggi/1220800)).
+
+Considering the simplicity of the implementations above, it seems that threads and fibers alone are enough to build complex systems, and although you could certainly build one using only these constructs, it's ill-advised to do so. There are a couple of noteworthy higher-level concurrency constructs in Ruby worth considering that solve many of the common problems one comes across while building a concurrent system - synchronization of shared state, cross-thread messaging, etc.
 
 ## Concurrency abstractions <small>(reactors and actors)</small>
 
@@ -112,7 +140,7 @@ Considering the simplicity of the implementations above, it seems that threads a
 
 The first of the mentioned abstractions is the venerable *EventMachine* - Ruby implementation of the [Reactor pattern](http://en.wikipedia.org/wiki/Reactor_pattern). So, basically, node.js built in Ruby, before node.js was cool.
 
-Curiously, EM doesn't use fibers in its internal implementation, and it uses Threads very sparingly, mainly because it's older than both the native thread implementation and the fiber implementation. It uses an event loop, a combination of non-blocking system calls for IO, and a thread pool when it has to manage calls that are blocking.
+Curiously, EM doesn't use fibers in its internal implementation, and it uses  hreads very sparingly, mainly because it's older than both the native thread implementation and the fiber implementation. It uses an event loop, a combination of non-blocking system calls for IO, and a thread pool when it has to manage calls that are blocking.
 
 First iteration of the fore-mentioned system was implemented using *EventMachine* as the main concurrency crutch. It kept many non-blocking connections open, and reacted to data as it came in. Each endpoint had an associated handler that got called when new data came in. 
 
