@@ -7,6 +7,9 @@ comments: true
 
 Continuing from the previous [introduction post](link) on concurrency primitives and abstractions in Ruby...
 
+
+The big requirement that makes this problem interesting is the long-running process that must deal with many "actions" at the same time. While not a particularly unusual problem it was a novelty because as web developers we mostly deal with request/response cycles and don't have to manage long running processes. So, naturally, it took us some time to recognize its inherent concurrent nature and get the architecture right.
+
 ## Recovering without rescuing
 
 Since Celluloid's concurrency features have described many times over, we'll focus on its other very important feature - fault tolerance and supervisors.
