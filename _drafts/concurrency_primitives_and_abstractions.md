@@ -7,15 +7,17 @@ comments: true
 
 ## Setting the stage
 
-For a while now, I've been a part of team that has been building a somewhat complex web app in Ruby. In addition to conventional web app requirements, this app has to connect to and keep open many simultaneous long-lived streaming connections towards third party data sources along with polling various REST APIs. Recongnizing the inherent concurrent nature of the problem domain, I decided to finally gain a clear understanding of the finer details of Ruby's concurrency primitives and abstractions. This one and the next few posts will deal with these topics and attempt to dispel confusion any potential readers may have about them.
+For a while now, my colleagues and I have been building a somewhat complex web app in Ruby. In addition to conventional web app requirements, this app has to connect to and keep open many simultaneous long-lived streaming connections towards third party data sources along with polling various REST APIs.
+
+Recognizing the inherent concurrent nature of the problem domain, I decided to finally gain a clear understanding of the finer details of Ruby's concurrency primitives and abstractions. This one and the next few posts will deal with these topics and attempt to dispel confusion any potential readers may have about them.
 
 ## Concurrency primitives <small>(threads and fibers)</small>
 
 Ruby is not poor in language primitives dealing with concurrency. It has support for native threads[^1] as do many other programming languages. Nothing new there, apart from the GIL. But many words and tears have been shed over the GIL, so we'll skip it here and only give you [this](http://www.jstorimer.com/blogs/workingwithcode/8085491-nobody-understands-the-gil) to get you started. 
 
-In addition to threads, Ruby has a [coroutine](http://www.ruby-doc.org/core-2.1.1/Fiber.html) implementation named "fibers"[^2]. The most important difference between threads and fibers is that threads depend on the scheduler to manage execution windows, and fibers are cooperative, meaning that being in a fiber the programmer must explicitly yield execution to some other Fiber. As such, they are a nice tool to handle concurrently happening things because they can be suspended and resumed as priorities of handling those things change.
+In addition to threads, Ruby has a [coroutine](http://www.ruby-doc.org/core-2.1.1/Fiber.html) implementation named "fibers"[^2]. The most important difference between threads and fibers is that threads depend on the scheduler to manage execution windows, while fibers are cooperative, meaning that being in a fiber the programmer must explicitly yield execution to some other fiber. As such, they are a nice tool to handle concurrently happening things because they can be suspended and resumed as priorities of handling those things change.
 
-To help diferentiate between Thread behaviour vs. Fiber behaviour, let's build the classic producer-consumer pattern using each of those to implement it.
+To help differentiate  between thread behaviour vs. Fiber behaviour, let's build the classic producer-consumer pattern using each of those to implement it.
 
 We'll introduce a dummy AddOneTask implementation to serve our purposes of sending tasks to run over a queue. The task keeps an internal counter and on each invocation of ```perform``` just increments the counter.
 
@@ -130,7 +132,7 @@ Task performed, state 5
 All fibers dead? true
 {% endhighlight %}
 
-In contrast to the previous example, fibers need explicit scheduling (even starting them needs to be explicit). We explicitly transfer control from one fiber to another by using ```fiber.transfer```, ```fiber.resume``` and ```Fiber.yield```. In the example above we have a pingpong-like transfer of control between the ```producer``` and the ```scheduler```. Whenever the ```scheduler``` gets the execution back, it picks a ```consumer``` to run. Even though they are harder to produce since we have control over execution, race conditions in Fiber-based code are still possible (one example being [this](https://gist.github.com/raggi/1220800)).
+In contrast to the previous example, fibers need explicit scheduling (even starting them needs to be explicit). We explicitly transfer control from one fiber to another by using ```fiber.transfer```, ```fiber.resume``` and ```Fiber.yield```. In the example above, we have a ping-pong-like transfer of control between the ```producer``` and the ```scheduler```. Whenever the ```scheduler``` gets the execution back, it picks a ```consumer``` to run. Even though they are harder to produce since we have control over execution, race conditions in fiber-based code are still possible (one example being [this](https://gist.github.com/raggi/1220800)).
 
 Considering the simplicity of the implementations above, it seems that threads and fibers alone are enough to build complex systems, and although you could certainly build one using only these constructs, it's ill-advised to do so. There are a couple of noteworthy higher-level concurrency constructs in Ruby worth considering that solve many of the common problems one comes across while building a concurrent system - synchronization of shared state, cross-thread messaging, etc.
 
@@ -142,7 +144,7 @@ The first of the mentioned abstractions is the venerable *EventMachine* - Ruby i
 
 Curiously, EM doesn't use fibers in its internal implementation, and it uses  hreads very sparingly, mainly because it's older than both the native thread implementation and the fiber implementation. It uses an event loop, a combination of non-blocking system calls for IO, and a thread pool when it has to manage calls that are blocking.
 
-First iteration of the fore-mentioned system was implemented using *EventMachine* as the main concurrency crutch. It kept many non-blocking connections open, and reacted to data as it came in. Each endpoint had an associated handler that got called when new data came in. 
+First iteration of the aforementioned system was implemented using *EventMachine* as the main concurrency crutch. It kept many non-blocking connections open, and reacted to data as it came in. Each endpoint had an associated handler that got called when new data came in. 
 
 This worked fine for a while, but as requirements changed and the domain grew bigger, it became hard to model and implement the requirements using handlers and callbacks. These techniques, while not inherently bad, often result in code that is very nested and execution that is non-sequential, especially if you're not using deferrables/promises as a facelift for the asynchronous parts of the code.
 
@@ -154,21 +156,21 @@ That particular problem hugely affects its usability, since one of Ruby's most i
 
 Fortunately, alternatives exist, the most notable being Celluloid. Inspired by the Erlang programming language and Scala's Akka library, Celluloid brings a lot of nice features to Ruby, most importantly a very OOP-like concurrency model and a fault-tolerance subsystem that brings supervisors and supervision trees to the table. Along with these, it has support for futures (analogous to EM's deferrables and node's promises) so you get the best of both worlds.
 
-Since Ruby is a "pure" OO language (everything is an object), model conceptualization is considerably easier when thinking in objects than in handlers and callbacks. So instead of relying on callbacks, Celluloid provides a way to build a model out of concurrently running objects that are able to talk among themselves - ie. **Actors**.
+Since Ruby is a "pure" OO language (everything is an object), model conceptualization is considerably easier when thinking in objects than in handlers and callbacks. So instead of relying on callbacks, Celluloid provides a way to build a model out of concurrently running objects that are able to talk among themselves - ie. **actors**.
 
-Celluloid uses Threads internally to represent Actors, and Fibers to represent tasks[^3] (messages) that the actor processes. Since each task can be suspended, actors can process multiple messages and interleave them if needed. We'll not delve too deep into the analysis of how Celluloid manages tasks, since a post that will paint a clearer picture of this process is already in the making.
+Celluloid uses threads internally to represent actors, and fibers to represent tasks[^3] (messages) that the actor processes. Since each task can be suspended, actors can process multiple messages and interleave them if needed. We'll not delve too deep into the analysis of how Celluloid manages tasks, since a post that will paint a clearer picture of this process is already in the making.
 
-If you need some of the basics explained, there's a nice intro on github wiki [page](https://github.com/celluloid/celluloid/wiki). You can also look at at [this](https://practicingruby.com/articles/gentle-intro-to-actor-based-concurrency) finely crafted blog post about Actor based concurrency in Ruby that even implements a minimal actor system at the end. 
+If you need some of the basics explained, there's a nice intro on github wiki [page](https://github.com/celluloid/celluloid/wiki). You can also look at [this](https://practicingruby.com/articles/gentle-intro-to-actor-based-concurrency) finely crafted blog post about Actor based concurrency in Ruby that even implements a minimal actor system at the end. 
 
 ## Next up
 
-Since there are many posts out there that focus on explaining how to build a concurrent system by relying on these abstractions, in the next two posts we'll instead focus on how these abstractions are implemented from basic building blocks - Threads, Fibers et al.
+Since there are many posts out there that focus on explaining how to build a concurrent system by relying on these abstractions, in the next two posts we'll focus instead on how these abstractions are implemented from basic building blocks - threads, fibers et al.
 
 ---
-[^1]: Up until version 1.9 Ruby only had a [green thread](http://en.wikipedia.org/wiki/Green_threads) implementation. Native threads were introduced in version 1.9
+[^1]: Up until version 1.9 Ruby only had a [green thread](http://en.wikipedia.org/wiki/Green_threads) implementation. Native threads were introduced in version 1.9.
 
-[^2]: In some languages, they are called Green Threads, but total equivalence between these terms does not stand because in some of these languages they are scheduled by the language VM itself.
+[^2]: In some languages, they are called Green threads, but total equivalence between these terms does not stand because in some of these languages they are scheduled by the language VM itself.
 
-[^3]: Celluloid [defaults](https://github.com/celluloid/celluloid/blob/64e46ee0ecbd848249d0476e8ac512b93bf18485/lib/celluloid.rb#L509) to Fibers to represent tasks, although it also supports a Thread representation.
+[^3]: Celluloid [defaults](https://github.com/celluloid/celluloid/blob/64e46ee0ecbd848249d0476e8ac512b93bf18485/lib/celluloid.rb#L509) to fibers to represent tasks, although it also supports a thread representation.
  
 [^4]: That's why you should always use a Queue to communicate between threads.
