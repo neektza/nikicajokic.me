@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Concurrency primitives and abstractions in Ruby"
-tags: concurrency ruby eventmachine celluloid
+tags: ruby concurrency threads fibers eventmachine celluloid
 comments: true
 ---
 
