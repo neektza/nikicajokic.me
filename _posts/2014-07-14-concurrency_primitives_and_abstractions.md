@@ -9,7 +9,7 @@ comments: true
 
 For a while now, my colleagues and I have been building a somewhat complex web app in Ruby. In addition to conventional web app requirements, this app has to connect to and keep open many simultaneous long-lived streaming connections towards third party data sources along with polling various REST APIs.
 
-Recognizing the inherent concurrent nature of the problem domain, I decided to finally gain a clear understanding of the finer details of Ruby's concurrency primitives and abstractions. This one and the next few posts will deal with these topics and attempt to dispel confusion any potential readers may have about them.
+Recognizing the inherent concurrent nature of the problem domain, I decided to finally obtain a clear understanding of the finer details of Ruby's concurrency primitives and abstractions. This and the next few posts will deal with these topics and attempt to dispel confusion any potential readers may have about them.
 
 ## Concurrency primitives <small>(threads and fibers)</small>
 
