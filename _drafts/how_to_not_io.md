@@ -13,5 +13,7 @@ The second possible approach is to build the request details (again, such as aut
 
 So my question is this... how to structure such a program (an API client library) which would abstarct the ugly parts, but still provide you with something that doesn't pollute your code with the IO monad, if such a thing is possible? In another words, how to keep you library "pure" [^1].
 
+WHAT?
+
 ---
 [^1]: I'm aware that that the IO monad is not "unpure".

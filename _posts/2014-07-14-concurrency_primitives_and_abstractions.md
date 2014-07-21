@@ -5,6 +5,8 @@ tags: ruby concurrency threads fibers eventmachine celluloid
 comments: true
 ---
 
+*This is part one of the series on Ruby concurrency. Next up, [part two](http://pltconfusion.dev/2014/07/23/eventmachine_internals_and_the_reactor_pattern).*
+
 ## Setting the stage
 
 For a while now, my colleagues and I have been building a somewhat complex web app in Ruby. In addition to conventional web app requirements, this app has to connect to and keep open many simultaneous long-lived streaming connections towards third party data sources along with polling various REST APIs.
@@ -165,6 +167,8 @@ If you need some of the basics explained, there's a nice intro on github wiki [p
 ## Next up
 
 Since there are many posts out there that focus on explaining how to build a concurrent system by relying on these abstractions, in the next two posts we'll focus instead on how these abstractions are implemented from basic building blocks - threads, fibers et al.
+
+Next post will explain the main ideas behind EvenMachine and dig into its implementation details to paint a clearer picture of what EventMachine is all about.
 
 ---
 [^1]: Up until version 1.9 Ruby only had a [green thread](http://en.wikipedia.org/wiki/Green_threads) implementation. Native threads were introduced in version 1.9.
