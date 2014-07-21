@@ -5,7 +5,7 @@ tags: concurrency ruby eventmachine
 comments: true
 ---
 
-Continuing from previous posts about [primitives and abstractions](link), in this part of the series we'll cover handpicked internals from EventMachine, and explain the gist of its ideas. You should be familiar with EventMachine's API to grok this. If you're not, [this](http://rubylearning.com/blog/2010/10/01/an-introduction-to-eventmachine-and-how-to-avoid-callback-spaghetti) is a solid post to get you started.
+Continuing from previous posts about [primitives and abstractions](/2014/07/14/concurrency_primitives_and_abstractions), in this part of the series we'll cover handpicked internals from EventMachine, and explain the gist of its ideas. You should be familiar with EventMachine's API to grok this. If you're not, [this](http://rubylearning.com/blog/2010/10/01/an-introduction-to-eventmachine-and-how-to-avoid-callback-spaghetti) is a solid post to get you started.
 
 As we mentioned in a previous post, the main idea behind EventMachine is the reactor loop. EventMachine itself has several implementations of this idea, one in C++, one in Java and one in pure Ruby (pure, meaning without native extensions of any kind). Appropriate implementations are used when running in environments where native extensions are available. C++ implementation when running in MRI, Java when inside JRuby and finally pure Ruby whenever native extensions cannot be used. We'll focus on pure Ruby implementation in this post.
 
@@ -196,7 +196,7 @@ Here's the implementation for a ```StreamObject``` that represents any socket th
 
 The ```heartbeat``` method checks for inactivity and if it deduces that the selectable is inactive it schedules it for closing.
 
-#### The threadpool
+#### The Threadpool
 
 The last thing of intereset is the Threadpool. Basically a combination of a queue of tasks, ie. callable objects (blocks) and a pool of Threads that are used to perform those tasks. As we mentioned in the previous post, the threadpool is used to handle blocking IO. Whenever we need to perform a blocking IO call, we do it in a separate Thread. EM's threadpool abstracts this away. We only need to ```defer``` the callbale object and EM will take care of it when it can.
 
@@ -254,11 +254,11 @@ The first method check if there is a threadpool, and if there is none, it create
 
 The second method is the one that actually creates the thread pool. It creates a bunch of threads and sets up each of them to continuosly fetch tasks from the ```@threadqueue```. Since ```Queue#pop``` blocks if there are no tasks to fetch, threads will wait until there is something for them to do. Once a task to execute is produced, the first thread to fetch [^3] it executes it and pushes the result along with the callback that handles the result to the ```@resultqueue```. It then signals a loopbreak to notify the reactor that it should run the callback that handles the result.
 
-The third method is not strictly a part of the thread-pool system, but it's used by it, so we'll cover it as such. It's used for running the result handling callbacks. It pops results (along with callbacks) from the ```@resultqueue``` and runs them [^4]. The reason that it's not strictly a part of thread-pool system is that it's also used to run the callbacks scheduled via the ```next_tick``` mechanism. It (thread-safely) consumes the ```@next_tick_queue``` for executables to run until it empties the queue. That odd little ```next_tick``` call in the ensure block is just a way tell the reactor to keep running and bubble up the exception (and not immediately stop) if an exection happens.
+The third method is not strictly a part of the thread-pool system, but it's used by it, so we'll cover it as such. It's used for running the result handling callbacks. It pops results (along with callbacks) from the ```@resultqueue``` and runs them [^4]. The reason that it's not strictly a part of thread-pool system is that it's also used to run the callbacks scheduled via the ```next_tick``` mechanism. It (thread-safely) consumes the ```@next_tick_queue``` for executables to run until it empties the queue. That odd little ```next_tick``` call in the ensure block is just a way tell the reactor to keep running and bubble up the exception (and not immediately stop) if one happens.
 
 ## Next up
 
-With EventMachine done, we're left with analyzing the Celluloid way of concurrency, ie. the Actor pattern. Nex
+With EventMachine done, we're left with analyzing the Celluloid way of concurrency, ie. the Actor pattern, so that's what we'll do next.
 
 ---
 [^1]: FNCTL
