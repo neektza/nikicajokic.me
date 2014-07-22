@@ -51,7 +51,7 @@ Other variables are self-explanatory.
 
 #### The Selectable
 
-A ```@selectable``` is an instance of the ```Selectable``` class which wraps a [socket](http://en.wikipedia.org/wiki/network_socket) (or a [file descriptor](http://en.wikipedia.org/wiki/file_descriptor)) and abstracts away IO operations on it. Since it's assumed that all IO operations should be non-blocking by default, the non-blocking flag[^1] set in the constructor for anything the ```Selectable``` class wraps.
+A ```@selectable``` is an instance of the ```Selectable``` class which wraps a [socket](http://en.wikipedia.org/wiki/network_socket) (or a [file descriptor](http://en.wikipedia.org/wiki/file_descriptor)) and abstracts away IO operations on it. Since it's assumed that all IO operations should be non-blocking by default, the non-blocking flag[^1] is set in the constructor for anything the ```Selectable``` class wraps.
 
 The class additionally implements methods for controlling, reading and writing from a socket in a non-blocking way (for example, only writing few packets at a time so the reactor loop doesn't get blocked).
 
@@ -146,9 +146,9 @@ These few snippets cover the basic setup and operation of EventMachine, but ther
 
 #### The Loopbreaker
 
-A loopbreak is a way to signal the Reactor it should do something. Why do it this way? Well, since it's running an infinite loop, it can't respond to calls - you can think of it as being deaf to all messages while running. Loopbreaker is a form of communication channel between the reactor and the world outside it. When something outside the loop signals a loopbreak, the reactor stops for a moment and let's other things happen. It does not terminate the loop, it just allows other things to run.
+A loopbreak is a way to signal the Reactor it should do something. Why do it this way? Well, since it's running an infinite loop, it can't respond to calls - you can think of it as being deaf to all messages while running. Loopbreaker is a form of communication channel between the reactor and the world outside it. When something outside the loop signals a loopbreak, the reactor stops for a moment and lets other things happen. It does not terminate the loop, it just allows other things to run.
 
-When do is the loopbreak signaled? Whenever we schedule something via the ```next_tick``` or ```defer``` methods, we need to tell the reactor that something has been scheduled so it can run those things. And, as it can't respond "okay, will do later" to messages that would tell it "hey, you have new stuff to do" while it's running an infinite loop, we produce a **loopbreak signal** to tell it to check if there's new stuff to do.
+When is the loopbreak signaled? Whenever we schedule something via the ```next_tick``` or ```defer``` methods, we need to tell the reactor that something has been scheduled so it can run those things. And, as it can't respond "okay, will do later" to messages that would tell it "hey, you have new stuff to do" while it's running an infinite loop, we produce a **loopbreak signal** to tell it to check if there's new stuff to do.
 
 Here's a (slightly modified [^2]) EventMachine implementation:
 
@@ -172,11 +172,11 @@ Here's a (slightly modified [^2]) EventMachine implementation:
   end
 {% endhighlight %}
 
-Internally, a loopbreaker is usually implemented as an one-way IO pipe between entities that are communicating. So a loopbreak signal is in effect just a few bytes sent over that pipe. When the reactor checks selectables for IO activity, it will see that it has something in ```LoopbreakReader```, which is the receiving end of the pipe wrapped in a ```Selectable```, and start the method to run scheduled blocks.
+Internally, a loopbreaker is usually implemented as a one-way IO pipe between entities that are communicating. So a loopbreak signal is in effect just a few bytes sent over that pipe. When the reactor checks selectables for IO activity, it will see that it has something in ```LoopbreakReader```, which is the receiving end of the pipe wrapped in a ```Selectable```, and start the method to run scheduled blocks.
 
 #### The Heartbeat
 
-A heartbeat is a way to continuously check state of selectables. Every selectable for which a stale state is possible (ie. a long-lived connection) has a ```heartbeat``` method implementation. This method checks if the connection is stale by checking if there was any activity in a certain specified interval.
+A heartbeat is a way to continuously check the state of the selectables. Every selectable for which a stale state is possible (ie. a long-lived connection) has a ```heartbeat``` method implementation. This method checks if the connection is stale by checking if there was any activity in a certain specified interval.
 
 Here's the implementation for a ```StreamObject``` that represents any socket that's used for long-lived data streaming.
 
@@ -248,13 +248,13 @@ end
 
 {% endhighlight %}
 
-The three methods in the above code snipped represent the entirety of the EM's Thread pool implementation.
+The three methods in the above code snippet represent the entirety of the EM's Thread pool implementation.
 
-The first method check if there is a threadpool, and if there is none, it creates the ```@taskqueue```, the ```@resultqueue``` and starts the threadpool creation process. Afterwards it pushes a task on a task queue.
+The first method to check if there is a threadpool, and if there is none, it creates the ```@taskqueue```, the ```@resultqueue``` and starts the threadpool creation process. Afterwards it pushes a task on a task queue.
 
 The second method is the one that actually creates the thread pool. It creates a bunch of threads and sets up each of them to continuously fetch tasks from the ```@threadqueue```. Since ```Queue#pop``` blocks if there are no tasks to fetch, threads will wait until there is something for them to do. Once a task to execute is produced, the first thread to fetch [^3] it executes it and pushes the result along with the callback that handles the result to the ```@resultqueue```. It then signals a loopbreak to notify the reactor that it should run the callback that handles the result.
 
-The third method is not strictly a part of the thread-pool system, but it's used by it, so we'll cover it as such. It's used for running the result handling callbacks. It pops results (along with callbacks) from the ```@resultqueue``` and runs them [^4]. The reason that it's not strictly a part of thread-pool system is that it's also used to run the callbacks scheduled via the ```next_tick``` mechanism. It (thread-safely) consumes the ```@next_tick_queue``` for executables to run until it empties the queue. That odd little ```next_tick``` call in the ensure block is just a way tell the reactor to keep running and bubble up the exception (and not immediately stop) if one happens.
+The third method is not strictly a part of the thread-pool system, but it's used by it, so we'll cover it as such. It's used for running the result handling callbacks. It pops results (along with callbacks) from the ```@resultqueue``` and runs them [^4]. The reason that it's not strictly a part of thread-pool system is that it's also used to run the callbacks scheduled via the ```next_tick``` mechanism. It (thread-safely) consumes the ```@next_tick_queue``` for executables to run until it empties the queue. That odd little ```next_tick``` call in the ensure block is just a way to tell the reactor to keep running and bubble up the exception (and not immediately stop) if one happens.
 
 ## Next up
 
@@ -264,5 +264,5 @@ With EventMachine done, we're left with analyzing the Celluloid way of concurren
 [^1]: FNCTL
 [^2]: EventMachine previously used a Pipe, but now uses an UDP socket to signal a loopbreak because pipes aren't available on Windows machines. I find the pipe implementation cleaner and more elegant so I present it as such here.
 [^3]: Fetching is done in a thread-safe manner since Ruby's Queue implementation is thread-safe. That's why you should always use it instead of rolling your own custom, Array backed queue.
-[^4]: It's important to note that there needn't actually be a callback since since we don't need to provide one when deferring if we don't care about the result.
+[^4]: It's important to note that there needn't actually be a callback since we don't need to provide one when deferring if we don't care about the result.
 [^6]: Just a wrapper over the C 
