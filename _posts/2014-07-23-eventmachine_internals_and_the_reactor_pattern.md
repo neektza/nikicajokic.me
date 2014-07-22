@@ -7,7 +7,7 @@ comments: true
 
 Continuing from previous posts about [primitives and abstractions](/2014/07/14/concurrency_primitives_and_abstractions), in this part of the series we'll cover handpicked internals from EventMachine, and explain the gist of its ideas. You should be familiar with EventMachine's API to grok this. If you're not, [this](http://rubylearning.com/blog/2010/10/01/an-introduction-to-eventmachine-and-how-to-avoid-callback-spaghetti) is a solid post to get you started.
 
-As we mentioned in a previous post, the main idea behind EventMachine is the reactor loop. EventMachine itself has several implementations of this idea, one in C++, one in Java and one in pure Ruby (pure, meaning without native extensions of any kind). Appropriate implementations are used when running in environments where native extensions are available. C++ implementation when running in MRI, Java when inside JRuby and finally pure Ruby whenever native extensions cannot be used. We'll focus on pure Ruby implementation in this post.
+As we mentioned in a previous post, the main idea behind EventMachine is the reactor loop. EventMachine itself has several implementations of this idea, one in C++, one in Java and one in pure Ruby (pure meaning without native extensions of any kind). Appropriate implementations are used when running in environments where native extensions are available. C++ implementation when running in MRI, Java when inside JRuby and finally pure Ruby whenever native extensions cannot be used. We'll focus on pure Ruby implementation in this post.
 
 ## The Reactor 
 
@@ -53,7 +53,7 @@ Other variables are self-explanatory.
 
 A ```@selectable``` is an instance of the ```Selectable``` class which wraps a [socket](http://en.wikipedia.org/wiki/network_socket) (or a [file descriptor](http://en.wikipedia.org/wiki/file_descriptor)) and abstracts away IO operations on it. Since it's assumed that all IO operations should be non-blocking by default, the non-blocking flag[^1] set in the constructor for anything the ```Selectable``` class wraps.
 
-The class additionally implements methods for controlling, reading and writing from a socket in a non-blocking way (for example only writing few packets at a time so the reactor loop doesn't get blocked).
+The class additionally implements methods for controlling, reading and writing from a socket in a non-blocking way (for example, only writing few packets at a time so the reactor loop doesn't get blocked).
 
 #### The Loop
 
@@ -89,7 +89,7 @@ Then there's the method that actually runs the Reactor and starts the infinite l
   end
 {% endhighlight %}
 
-Looking at the ```run``` method we can see that all it does is open a loopbreaker (purpose of which we'll explain a bit later) and start an infinite loop which in each iteration: 
+Looking at the ```run``` method, we can see that all it does is open a loopbreaker (purpose of which we'll explain a bit later) and start an infinite loop which in each iteration: 
 
 1. ```run_timers``` runs the registered ```@timers``` when a specified point in time has been reached,
 2. ```crank_selectables``` checks the read/write state of ```@selectables``` (IO objects) and performs IO operations on them if they're ready and
@@ -146,9 +146,9 @@ These few snippets cover the basic setup and operation of EventMachine, but ther
 
 #### The Loopbreaker
 
-A loopbreak is a way to signal the Reactor it should do something. Why do it this way? Well, since it's running an infinite loop it can't respond to calls - you can think of it as being deaf to all messages while running. Loopbreaker is a form of communication channel between the reactor and the world outside it. When something outside the loop signals a loopbreak, the reactor stops for a moment and let's other things happen. It does not terminate the loop, it just allows other things to run.
+A loopbreak is a way to signal the Reactor it should do something. Why do it this way? Well, since it's running an infinite loop, it can't respond to calls - you can think of it as being deaf to all messages while running. Loopbreaker is a form of communication channel between the reactor and the world outside it. When something outside the loop signals a loopbreak, the reactor stops for a moment and let's other things happen. It does not terminate the loop, it just allows other things to run.
 
-When do is the loopbreak signaled? Whenever we schedule something via the ```next_tick``` or ```defer``` methods we need to tell the reactor that something has been scheduled so it can run those things. And, as it can't respond "okay, will do later" to messages that would tell it "hey, you have new stuff to do" while it's running an infinite loop, we produce a **loopbreak signal** to tell it to check if there's new stuff to do.
+When do is the loopbreak signaled? Whenever we schedule something via the ```next_tick``` or ```defer``` methods, we need to tell the reactor that something has been scheduled so it can run those things. And, as it can't respond "okay, will do later" to messages that would tell it "hey, you have new stuff to do" while it's running an infinite loop, we produce a **loopbreak signal** to tell it to check if there's new stuff to do.
 
 Here's a (slightly modified [^2]) EventMachine implementation:
 
@@ -194,11 +194,11 @@ Here's the implementation for a ```StreamObject``` that represents any socket th
   end
 {% endhighlight %}
 
-The ```heartbeat``` method checks for inactivity and if it deduces that the selectable is inactive it schedules it for closing.
+The ```heartbeat``` method checks for inactivity and if it deduces that the selectable is inactive, it schedules it for closing.
 
 #### The Threadpool
 
-The last thing of interest is the Threadpool. Basically a combination of a queue of tasks, ie. callable objects (blocks) and a pool of Threads that are used to perform those tasks. As we mentioned in the previous post, the threadpool is used to handle blocking IO. Whenever we need to perform a blocking IO call, we do it in a separate Thread. EM's threadpool abstracts this away. We only need to ```defer``` the callable object and EM will take care of it when it can.
+The last thing of interest is the Threadpool. Basically, a combination of a queue of tasks, ie. callable objects (blocks) and a pool of Threads that are used to perform those tasks. As we mentioned in the previous post, the threadpool is used to handle blocking IO. Whenever we need to perform a blocking IO call, we do it in a separate Thread. EM's threadpool abstracts this away. We only need to ```defer``` the callable object and EM will take care of it when it can.
 
 Let's see the implementation of this mechanism...
 
