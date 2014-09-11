@@ -2,7 +2,7 @@
 layout: post
 title: "Supervisors and Fault Tolerance"
 tags: concurrency ruby eventmachine celluloid
-comments: true
+comments: false
 ---
 
 Continuing from the previous [introduction post](link) on concurrency primitives and abstractions in Ruby...
