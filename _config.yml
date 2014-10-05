@@ -1,7 +1,8 @@
-title:            PLT Confusion
-logo:             lambda-logo.png
-disqus_shortname: pltconfusion
-url:              http://pltconfusion.com
+title:              PLT Confusion
+description:        '"Confusion is just ignorance leaving the brain."'
+logo:               lambda-logo.png
+disqus_shortname:   pltconfusion
+url:                http://pltconfusion.com
 
 # Owner/author information
 owner:
