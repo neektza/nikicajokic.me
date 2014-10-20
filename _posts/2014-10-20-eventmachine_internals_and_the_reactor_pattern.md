@@ -213,7 +213,7 @@ The ```heartbeat``` method checks for inactivity and if it deduces that the sele
 
 The last thing of interest is the threadpool. Basically, a combination of a queue of tasks, ie. callable objects (blocks) and a pool of Threads that are used to perform those tasks. As we mentioned in the previous post, the threadpool is used to handle blocking IO. Whenever we need to perform a blocking IO call, we do it in a separate Thread. EM's threadpool abstracts this away. We only need to ```defer``` the callable object and EM will take care of it when it can.
 
-The following three methods in the above code snippet represent the entirety of the EM's Thread pool implementation.
+The following three methods represent the entirety of the EM's Thread pool implementation.
 
 {% highlight ruby %}
 
