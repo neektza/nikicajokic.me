@@ -5,25 +5,35 @@ tags: concurrency ruby eventmachine
 comments: false
 ---
 
-Continuing on from previous posts about [primitives and abstractions](/2014/07/14/concurrency_primitives_and_abstractions), in this part of the series we'll pick a few interesting internals from EventMachine's source code, and explain the gist of its ideas contained it these snippets. You should be familiar with EventMachine's API to grok this. If you're not, [this](http://rubylearning.com/blog/2010/10/01/an-introduction-to-eventmachine-and-how-to-avoid-callback-spaghetti) is a solid post to get you started.
+Continuing from the previous posts about [primitives and abstractions](/2014/07/14/concurrency_primitives_and_abstractions), in this part of the series we'll pick a few interesting internals from EventMachine's source code, and explain the core ideas behind these snippets. If you're not familiar with EventMachine, [this](http://rubylearning.com/blog/2010/10/01/an-introduction-to-eventmachine-and-how-to-avoid-callback-spaghetti) is a solid post to get you started.
 
-> The reactor design pattern is an event handling pattern for handling service requests delivered concurrently to a service handler by one or more inputs. The service handler then demultiplexes the incoming requests and dispatches them synchronously to the associated request handlers.
->
-> -- [Wikipedia](http://en.wikipedia.org/wiki/Reactor_pattern)
-
-As we mentioned in a previous post, the main idea behind EventMachine is the reactor loop. EventMachine itself has several implementations of this idea, targeting different platforms. One is in C++, one in Java and one in pure Ruby (pure meaning without native extensions of any kind).
-
-Appropriate implementations are used when running in environments where native extensions are available. C++ implementation when running in MRI, Java when inside JRuby and finally pure Ruby whenever native extensions cannot be used. In this post we'll focus on **pure Ruby implementation**.
+As we mentioned in a previous post, the main idea behind EventMachine is the reactor loop. EventMachine itself has several implementations of this idea targeting different platforms. In this post we'll focus on **pure Ruby implementation**.
 
 ## The Reactor pattern
 
-So, what's a Reactor? **It's a process running in an infinite loop and continuously checking for registered callbacks to run.** Whenever you provide a block to execute on certain condition, you're actually registering a callback in the Reactor. A condition can be anything that takes some time, for example:
+A Reactor is a **process running in an infinite loop reacting to stimulii from the outside world**. Its reactions are codified in the form of registered callbacks that get executed when appropriate conditions are met or certain events occur. 
+
+Let's see what Wikipedia has to say about the topic:
+
+> The reactor design pattern is an event handling pattern for handling service requests delivered concurrently to a service handler by one or more inputs. The service handler then demultiplexes the incoming requests and dispatches them synchronously to the associated request handlers.
+
+In other words, it's a way of managing concurrently occurring events in the outside world. We have various events coming in through one or more channels, and we use the Reactor to cherry-pick events we want to react to by defining callbacks.
+
+In EM, whenever you provide a block to execute under a certain condition, you're actually registering a callback in the Reactor. A condition is usually the completion of an lingering operation, for example:
 
 * an HTTP request has been completed,
 * a DB table has been read from,
 * a file has been written to.
 
-A Reactor is, then, an object that wraps the reactor loop and provides methods for managing execution. Ruby implements the Reactor as a [Singleton](http://sourcemaking.com/design_patterns/singleton) object with several methods for starting the loop, registering callbacks and timers and signaling loop breaks.
+There's a pattern to be noticed here. We use EM when we want to avoid waiting for IO operations to complete. Instead on waiting, we register a callback that gets executed once the operation is completed and move on to doing other things.
+
+It's an efficient way of doing IO and a nice way of abstracting away the gory details of multi-threading that's usually deployed in similar scenarios.
+
+Let's now see how this pattern works under the hood.
+
+## EventMachine internals
+
+A Reactor in EventMachine is implemented as an object that wraps an infinite loop and provides methods for managing execution. Ruby implements the Reactor as a [Singleton](http://sourcemaking.com/design_patterns/singleton) object with several methods for starting the loop, registering callbacks and timers and signaling loop breaks.
 
 #### Initialization
 
@@ -143,7 +153,7 @@ The ```crank_selectables``` method is the only interesting one here. It partitio
 
 Other two methods are pretty straightforward in their purpose. The ```run_timers``` method only executes all code blocks from the ```@timers``` set once their time-to-execute has been reached, while the ```run_heartbeats``` runs the ```heartbeat``` method on each selectable every ```HeartbeatInterval``` seconds. The details of the ```heartbeat``` method are covered further down in this post.
 
-These few snippets cover the basic setup and operation of EventMachine, but there are a few more patterns to cover at this point so we can see a clearer picture of what EM in its totality is. Most importantly, we'll cover the Loopbreaker, the Heartbeat and the Threadpool.
+These few snippets cover the basic setup and operation of EventMachine, but there are a few more patterns to cover at this point so we can see a clearer picture of what EM in its totality is. Most importantly, we'll cover the Loopbreaker, the Heartbeat and the threadpool.
 
 #### The Loopbreaker
 
@@ -201,7 +211,7 @@ The ```heartbeat``` method checks for inactivity and if it deduces that the sele
 
 #### The threadpool
 
-The last thing of interest is the Threadpool. Basically, a combination of a queue of tasks, ie. callable objects (blocks) and a pool of Threads that are used to perform those tasks. As we mentioned in the previous post, the threadpool is used to handle blocking IO. Whenever we need to perform a blocking IO call, we do it in a separate Thread. EM's threadpool abstracts this away. We only need to ```defer``` the callable object and EM will take care of it when it can.
+The last thing of interest is the threadpool. Basically, a combination of a queue of tasks, ie. callable objects (blocks) and a pool of Threads that are used to perform those tasks. As we mentioned in the previous post, the threadpool is used to handle blocking IO. Whenever we need to perform a blocking IO call, we do it in a separate Thread. EM's threadpool abstracts this away. We only need to ```defer``` the callable object and EM will take care of it when it can.
 
 Let's see the implementation of this mechanism...
 
@@ -257,11 +267,13 @@ The ```defer``` method to test if there is a threadpool, and if there is none, i
 
 The ```spawn_threadpool``` is the one that actually creates the thread pool. It creates a number of threads and sets up each of them to continuously fetch tasks from the ```@threadqueue```. Since ```Queue#pop``` blocks whenever there are no tasks to fetch, threads will wait until there is a task that has to be executed. Once a task to execute is produced, the first thread to fetch [^4] it executes it and pushes the result along with the callback that handles the result to the ```@resultqueue```. It then signals a loopbreak to notify the reactor that it should run the callback that handles the result.
 
-The ```run_deferred_callbacks``` method is not strictly a part of the thread-pool system, but since it's tied to it, we'll cover it as such. It's used for running the result handling callbacks. It pops results (along with callbacks) from the ```@resultqueue``` and runs them [^5]. The reason that it's not strictly a part of thread-pool system is that it's also used to run the callbacks scheduled via the ```next_tick``` mechanism. It (thread-safely) consumes the ```@next_tick_queue``` for executables to run until it empties the queue. That odd little ```next_tick``` call in the ensure block is just a way of telling the reactor to keep running and bubble up the exception (and not immediately stop) if one happens.
+The ```run_deferred_callbacks``` method is not strictly a part of the threadpool system, but since it's tied to it, we'll cover it as such. It's used for running the result handling callbacks. It pops results (along with callbacks) from the ```@resultqueue``` and runs them [^5]. The reason that it's not strictly a part of threadpool system is that it's also used to run the callbacks scheduled via the ```next_tick``` mechanism. It (thread-safely) consumes the ```@next_tick_queue``` for executables to run until it empties the queue. That odd little ```next_tick``` call in the ensure block is just a way of telling the reactor to keep running and bubble up the exception (and not immediately stop) if one happens.
 
 ## Next up
 
-With EventMachine covered, we're left with analyzing the Celluloid way of concurrency, ie. the Actor pattern, so that's what we'll do in one of the next posts.
+I hope I gave a somewhat understandable explanation of EM's internals and that you have a clearer picture in your mind of what's happening under the hood. If you have any questions or comments be sure to leave them in the comments, and I'll give my best to answer them.
+
+Next up, Celluloid and the Actor pattern.
 
 ---
 [^1]: By using the [```IO#fcntl```](http://ruby-doc.org/core-2.1.2/IO.html#method-i-fcntl) method which is just a ruby wrapper over the [```fcntl```](http://linux.die.net/man/2/fcntl) system call for manipulating file descriptors.
