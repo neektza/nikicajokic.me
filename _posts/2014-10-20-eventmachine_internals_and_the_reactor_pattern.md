@@ -213,7 +213,7 @@ The ```heartbeat``` method checks for inactivity and if it deduces that the sele
 
 The last thing of interest is the threadpool. Basically, a combination of a queue of tasks, ie. callable objects (blocks) and a pool of Threads that are used to perform those tasks. As we mentioned in the previous post, the threadpool is used to handle blocking IO. Whenever we need to perform a blocking IO call, we do it in a separate Thread. EM's threadpool abstracts this away. We only need to ```defer``` the callable object and EM will take care of it when it can.
 
-Let's see the implementation of this mechanism...
+The following three methods in the above code snippet represent the entirety of the EM's Thread pool implementation.
 
 {% highlight ruby %}
 
@@ -227,6 +227,13 @@ module EventMachine
     end
     @threadqueue << [op||blk,callback]
   end
+end
+{% endhighlight %}
+
+The ```defer``` method to test if there is a threadpool, and if there is none, it creates the ```@taskqueue```, the ```@resultqueue``` and starts the threadpool creation process. Afterwards, it simply pushes a task given to it on a task queue.
+
+{% highlight ruby %}
+module EventMachine
   def self.spawn_threadpool
     until @threadpool.size == @threadpool_size.to_i
       thread = Thread.new do
@@ -242,6 +249,13 @@ module EventMachine
     end
     @all_threads_spawned = true
   end
+end
+{% endhighlight %}
+
+The ```spawn_threadpool``` is the one that actually creates the thread pool. It creates a number of threads and sets up each of them to continuously fetch tasks from the ```@threadqueue```. Since ```Queue#pop``` blocks whenever there are no tasks to fetch, threads will wait until there is a task that has to be executed. Once a task to execute is produced, the first thread to fetch [^4] it executes it and pushes the result along with the callback that handles the result to the ```@resultqueue```. It then signals a loopbreak to notify the reactor that it should run the callback that handles the result.
+
+{% highlight ruby %}
+module EventMachine
   def self.run_deferred_callbacks
     until (@resultqueue ||= []).empty?
       result,cback = @resultqueue.pop
@@ -258,14 +272,7 @@ module EventMachine
     end
   end
 end
-
 {% endhighlight %}
-
-The three methods in the above code snippet represent the entirety of the EM's Thread pool implementation.
-
-The ```defer``` method to test if there is a threadpool, and if there is none, it creates the ```@taskqueue```, the ```@resultqueue``` and starts the threadpool creation process. Afterwards, it simply pushes a task given to it on a task queue.
-
-The ```spawn_threadpool``` is the one that actually creates the thread pool. It creates a number of threads and sets up each of them to continuously fetch tasks from the ```@threadqueue```. Since ```Queue#pop``` blocks whenever there are no tasks to fetch, threads will wait until there is a task that has to be executed. Once a task to execute is produced, the first thread to fetch [^4] it executes it and pushes the result along with the callback that handles the result to the ```@resultqueue```. It then signals a loopbreak to notify the reactor that it should run the callback that handles the result.
 
 The ```run_deferred_callbacks``` method is not strictly a part of the threadpool system, but since it's tied to it, we'll cover it as such. It's used for running the result handling callbacks. It pops results (along with callbacks) from the ```@resultqueue``` and runs them [^5]. The reason that it's not strictly a part of threadpool system is that it's also used to run the callbacks scheduled via the ```next_tick``` mechanism. It (thread-safely) consumes the ```@next_tick_queue``` for executables to run until it empties the queue. That odd little ```next_tick``` call in the ensure block is just a way of telling the reactor to keep running and bubble up the exception (and not immediately stop) if one happens.
 
