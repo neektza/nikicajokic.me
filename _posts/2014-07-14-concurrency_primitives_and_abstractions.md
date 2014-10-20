@@ -144,7 +144,7 @@ Considering the simplicity of the implementations above, it seems that threads a
 
 The first of the mentioned abstractions is the venerable *EventMachine* - Ruby implementation of the [Reactor pattern](http://en.wikipedia.org/wiki/Reactor_pattern). So, basically, node.js built in Ruby, before node.js was cool.
 
-Curiously, EM doesn't use fibers in its internal implementation, and it uses  hreads very sparingly, mainly because it's older than both the native thread implementation and the fiber implementation. It uses an event loop, a combination of non-blocking system calls for IO, and a thread pool when it has to manage calls that are blocking.
+Curiously, EM doesn't use fibers in its internal implementation, and it uses threads very sparingly, mainly because it's older than both the native thread implementation and the fiber implementation. It uses an event loop, a combination of non-blocking system calls for IO, and a thread pool when it has to manage calls that are blocking.
 
 First iteration of the aforementioned system was implemented using *EventMachine* as the main concurrency crutch. It kept many non-blocking connections open, and reacted to data as it came in. Each endpoint had an associated handler that got called when new data came in. 
 
