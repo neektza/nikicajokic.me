@@ -230,7 +230,7 @@ module EventMachine
 end
 {% endhighlight %}
 
-The ```defer``` method to test if there is a threadpool, and if there is none, it creates the ```@taskqueue```, the ```@resultqueue``` and starts the threadpool creation process. Afterwards, it simply pushes a task given to it on a task queue.
+The ```defer``` method is used to test if there is a threadpool, and if there is none, it creates the ```@taskqueue```, the ```@resultqueue``` and starts the threadpool creation routine. Afterwards, it simply pushes a task given to it on a task queue.
 
 {% highlight ruby %}
 module EventMachine
