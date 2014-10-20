@@ -2,7 +2,7 @@
 layout: post
 title: "EventMachine internals and the Reactor pattern"
 tags: concurrency ruby eventmachine
-comments: false
+comments: true
 ---
 
 Continuing from the previous posts about [primitives and abstractions](/2014/07/14/concurrency_primitives_and_abstractions), in this part of the series we'll pick a few interesting internals from EventMachine's source code, and explain the core ideas behind these snippets. If you're not familiar with EventMachine, [this](http://rubylearning.com/blog/2010/10/01/an-introduction-to-eventmachine-and-how-to-avoid-callback-spaghetti) is a solid post to get you started.
