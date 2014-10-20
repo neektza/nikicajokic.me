@@ -5,7 +5,7 @@ tags: ruby concurrency threads fibers eventmachine celluloid
 comments: true
 ---
 
-This is part one of the series on Ruby concurrency. Next up, [part two](/2014/10/20/eventmachine_internals_and_the_reactor_pattern).
+This is part one of the series on Ruby concurrency. Next up, [part two](/2014/10/20/eventmachine_internals_and_the_reactor_pattern) abount EventMachine internals and the reactor pattern.
 
 ## Setting the stage
 
