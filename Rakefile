@@ -1,3 +1,3 @@
 task :deploy do
-  sh 'jekyll build && rsync -r _site neektza@floatingpoint.io:~/www/pltconfusion.com'
+  sh 'bundle exec jekyll build && rsync -r _site root@floatingpoint.io:/home/www/pltconfusion.com'
 end
