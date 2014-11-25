@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rake'
-gem 'jekyll'
+gem 'jekyll', '~> 1.1'
 gem 'zurb-foundation'
 gem 'compass'
 gem 'RedCloth'

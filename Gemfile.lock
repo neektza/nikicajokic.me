@@ -59,7 +59,7 @@ DEPENDENCIES
   RedCloth
   compass
   foreman
-  jekyll
+  jekyll (~> 1.1)
   jekyll-tagging
   rake
   zurb-foundation
