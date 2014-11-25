@@ -13,6 +13,7 @@ module.exports = function(grunt) {
         '!assets/js/scripts.min.js'
       ]
     },
+
     recess: {
       dist: {
         options: {
@@ -26,6 +27,7 @@ module.exports = function(grunt) {
         }
       }
     },
+
     uglify: {
       dist: {
         files: {
@@ -36,30 +38,33 @@ module.exports = function(grunt) {
         }
       }
     },
-    // imagemin: {
-    //   dist: {
-    //     options: {
-    //       optimizationLevel: 7,
-    //       progressive: true
-    //     },
-    //     files: [{
-    //       expand: true,
-    //       cwd: 'images/',
-    //       src: '{,*/}*.{png,jpg,jpeg}',
-    //       dest: 'images/'
-    //     }]
-    //   }
-    // },
-    // svgmin: {
-    //   dist: {
-    //     files: [{
-    //       expand: true,
-    //       cwd: 'images/',
-    //       src: '{,*/}*.svg',
-    //       dest: 'images/'
-    //     }]
-    //   }
-    // },
+
+    imagemin: {
+      dist: {
+        options: {
+          optimizationLevel: 7,
+          progressive: true
+        },
+        files: [{
+          expand: true,
+          cwd: 'images/',
+          src: '{,*/}*.{png,jpg,jpeg}',
+          dest: 'images/'
+        }]
+      }
+    },
+
+    svgmin: {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: 'images/',
+          src: '{,*/}*.svg',
+          dest: 'images/'
+        }]
+      }
+    },
+
     watch: {
       less: {
         files: [
@@ -74,6 +79,7 @@ module.exports = function(grunt) {
         tasks: ['uglify']
       }
     },
+
     clean: {
       dist: [
         'assets/css/main.min.css',
@@ -95,10 +101,11 @@ module.exports = function(grunt) {
   grunt.registerTask('default', [
     'clean',
     'recess',
-    'uglify'
-    // 'imagemin',
-    // 'svgmin'
+    'uglify',
+    'imagemin',
+    'svgmin'
   ]);
+
   grunt.registerTask('dev', [
     'watch'
   ]);
