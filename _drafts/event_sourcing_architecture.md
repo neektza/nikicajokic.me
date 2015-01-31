@@ -22,7 +22,7 @@ This quote illustrates what ES is about essentially. What I think it's trying to
 
 When we encounter complex problems that we can't hold in our heads, we usually respond by by wanting to write things down. When things are written down, we free up precious RAM in our heads that we can now use to break things apart and figure out what is going on.
 
-That's what **git** does for codebases. It writes these changes down and makes it possible to manage them effectively. Analogous to that, Event Sourcing makes data mutations in your system manageable by writing the changes down. It provides insight into what is actually happening under the hood by providing a view of data before and after a change.
+That's what **git** does for codebases. It writes these changes down and makes it possible to manage them effectively. Analogous to that, Event Sourcing makes data mutations in your system manageable by writing the changes down. It provides insight into what is actually happening under the hood by providing a historical view of data.
 
 First, we'll define the problem we're trying to solve and a bit later we'll show how exactly Event Sourcing helps us solve this problem. 
 
