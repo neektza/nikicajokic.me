@@ -1,15 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rake'
-gem 'jekyll', '~> 1.1'
-gem 'zurb-foundation'
-gem 'compass'
-gem 'RedCloth'
-
-# Plugins
-gem 'jekyll-tagging'
-
-group :development do
-  gem "foreman"
-end
-
+gem 'jekyll'
+gem 'jekyll-sitemap'
+gem 'rouge'
+gem 'octopress', '~> 3.0.0.rc.12'

@@ -7,4 +7,4 @@ examples/
 .bundle/
 _site/
 _images/
-.sass_cache
+.sass_cache/

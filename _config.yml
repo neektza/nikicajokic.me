@@ -1,41 +1,23 @@
+# Site wide configuration
+
 title:              PLT Confusion
-description:        '"Confusion is just ignorance leaving the brain."'
-logo:               lambda-logo.png
+description:        '"Confusion is just ignorance leaving the brain"'
+# logo:               lambda-logo.png
+search:             true
 disqus_shortname:   pltconfusion
 url:                http://pltconfusion.com
 
-# Owner/author information
-owner:
-  name: Nikica
-  avatar: crazy_me.jpg
-  email: neektza@email.com
-  # Social networking links used in footer. Update and remove as you like.
-  twitter: neektza
-  facebook: neektza       
-  github: neektza
-  stackexchange: http://stackexchange.com/users/442780/neektza 
-  linkedin: nikicajokic
+# Jekyll configuration
 
-# Analytics and webmaster tools stuff goes here
-google_analytics: UA-41474479-1
-google_verify:
-
-# Links to include in top navigation
-# For external links add external: true
-links:
-  - title: Articles
-    url: /
-  - title: About
-    url: /about
-
-# http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-timezone:    Europe/Zagreb
-future:      true
-pygments:    true
+paginate: 25
+paginate_path: "/pages/:num/"
+  
+permalink:   /:year/:month/:day/:title/
 markdown:    kramdown
+highlighter: pygments
 
-# https://github.com/mojombo/jekyll/wiki/Permalinks
-permalink: /:year/:month/:day/:title
+sass:
+  sass_dir: _sass
 
 kramdown:
   auto_ids: true
@@ -44,12 +26,20 @@ kramdown:
   toc_levels: 1..6
   use_coderay: false
 
-  coderay:
-    coderay_line_numbers: 
-    coderay_line_numbers_start: 1
-    coderay_tab_width: 4
-    coderay_bold_every: 10
-    coderay_css: class
-
 include: [".htaccess"]
-exclude: ["node_modules", "vendor", "lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.rb", "tmp", "less", "*.sublime-project", "*.sublime-workspace", "test", "spec", "Gruntfile.js", "package.json"]
+exclude: ["lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.rb", "tmp", "less", "*.sublime-project", "*.sublime-workspace", "test", "spec", "Gruntfile.js", "package.json", "node_modules", "Gemfile", "Gemfile.lock", "LICENSE", "README.md", "vendor"]
+
+owner:
+  name: Nikica Jokic
+  avatar: crazy_me.jpg
+  email: neektza@email.com
+  # Social networking links used in footer. Update and remove as you like.
+  twitter: neektza
+  facebook: neektza       
+  github: neektza
+  linkedin: nikicajokic
+  stackexchange: http://stackexchange.com/users/442780/neektza 
+  google:
+    plus: neektza
+    analytics: UA-41474479-1
+    verify:
