@@ -71,6 +71,7 @@ body {
 	}
 
 	#main {
+		width: 100%;
 
 		.description {
 			background-size: cover;
@@ -127,7 +128,12 @@ body {
 		}
 
 
-		width: 100%;
+		.about {
+			margin: 4em auto;
+			width: 55%;
+			font-size: 1.8em;
+		}
+
 	
 		.article-list {
 			width: 100%;
@@ -161,23 +167,13 @@ body {
 			margin: 6em auto;
 			width: 55%;
 
-			.entry-title {
-			}
+			.entry-title { }
 
 			.entry-body {
-				.entry-share {
-					float: left;
-					font-size: 6em;
-					a {
-						display: block;
-						color: $light-gray;
-						&:hover { color: orange }
-					}
-				}
 
 				.entry-content {
 					font-size: 1.8em;
-					margin: 0 auto 6em;
+					padding-bottom: 6em;
 				}
 
 				@include clearfix;
