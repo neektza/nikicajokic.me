@@ -3,6 +3,7 @@ layout: post
 title: "EventMachine internals and the Reactor pattern"
 tags: concurrency ruby eventmachine
 comments: true
+modified: 2015-03-22
 ---
 
 Continuing from the previous posts about [primitives and abstractions](/2014/07/14/concurrency_primitives_and_abstractions), in this part of the series we'll pick a few interesting internals from EventMachine's source code, and explain the core ideas behind these snippets. If you're not familiar with EventMachine, [this](http://javieracero.com/blog/starting-with-eventmachine-i) is a solid series of posts to get you started.
@@ -35,47 +36,49 @@ Let's now see how this pattern works under the hood.
 
 A Reactor in EventMachine is implemented as an object that wraps an infinite loop and provides methods for managing execution. Ruby implements the Reactor as a [Singleton](http://sourcemaking.com/design_patterns/singleton) object with several methods for starting the loop, registering callbacks and timers, and signaling loop breaks.
 
-#### Initialization
+### Initialization
 
 First, the constructor that initializes the Reactor.
 
-{% highlight ruby %}
-  module EventMachine
-    class Reactor
-      include Singleton
-      def initialize_for_run
-        @running = false
-        @stop_scheduled = false
-        @selectables ||= {}; @selectables.clear
-        @timers = SortedSet.new
-        set_timer_quantum(0.1)
-        @current_loop_time = Time.now
-        @next_heartbeat = @current_loop_time + HeartbeatInterval
-      end
+{% highlight ruby linenos %}
+
+module EventMachine
+  class Reactor
+    include Singleton
+    def initialize_for_run
+      @running = false
+      @stop_scheduled = false
+      @selectables ||= {};@selectables.clear
+      @timers = SortedSet.new
+      set_timer_quantum(0.1)
+      @current_loop_time = Time.now
+      @next_heartbeat = @current_loop_time + HeartbeatInterval
     end
   end
+end
+
 {% endhighlight %}
 
 As we can see in the snippet above, quite a few variables are initialized in the constructor, which are as follows:
 
-* ```@selectables``` -- references to various IO capable things (network connections, files, pipes and sockets in general),
-* ```@timers``` -- references to code blocks that need to be run at a certain point in time, sorted by *time-to-execution*,
-* ```@next_heartbeat``` -- a variable that holds the point in time when the next selectable-aliveness check should be done (explained later),
-* ```@stop_scheduled``` -- a variable that, if set to ```true```, tells the Reactor to shut down in the next iteration.
+* `@selectables` -- references to various IO capable things (network connections, files, pipes and sockets in general),
+* `@timers` -- references to code blocks that need to be run at a certain point in time, sorted by *time-to-execution*,
+* `@next_heartbeat` -- a variable that holds the point in time when the next selectable-aliveness check should be done (explained later),
+* `@stop_scheduled` -- a variable that, if set to `true`, tells the Reactor to shut down in the next iteration.
 
 Other variables are almost self-explanatory. Let's now introduce and explain a few terms used across EM's source code.
 
-#### The Selectable
+### The Selectable
 
-A ```@selectable``` is an instance of the ```Selectable``` class which wraps a [socket](http://en.wikipedia.org/wiki/network_socket) (or a [file descriptor](http://en.wikipedia.org/wiki/file_descriptor)) and abstracts away IO operations on it. Since it's assumed that all IO operations should be non-blocking by default, the non-blocking flag[^1] is set in the constructor for anything the ```Selectable``` class wraps.
+A `@selectable` is an instance of the `Selectable` class which wraps a [socket](http://en.wikipedia.org/wiki/network_socket) (or a [file descriptor](http://en.wikipedia.org/wiki/file_descriptor)) and abstracts away IO operations on it. Since it's assumed that all IO operations should be non-blocking by default, the non-blocking flag[^1] is set in the constructor for anything the `Selectable` class wraps.
 
 The class additionally implements methods for controlling, reading and writing from a socket in a non-blocking way (for example, only writing a few packets at a time so the reactor loop doesn't get blocked).
 
-#### The Loop
+### The Loop
 
 Next in line is the Loop, a method that actually runs the Reactor and starts the infinite loop.
 
-{% highlight ruby %}
+{% highlight ruby linenos %}
   module EventMachine
     class Reactor
       def run
@@ -103,17 +106,17 @@ Next in line is the Loop, a method that actually runs the Reactor and starts the
   end
 {% endhighlight %}
 
-Looking at the ```run``` method, we can see that all it does is open a loopbreaker (purpose of which we'll explain later) and start an infinite loop which in each iteration: 
+Looking at the `run` method, we can see that all it does is open a loopbreaker (purpose of which we'll explain later) and start an infinite loop which in each iteration: 
 
-1. ```run_timers``` --> runs the registered ```@timers``` when a specified point in time has been reached,
-2. ```crank_selectables``` --> checks the read/write state of ```@selectables``` (IO objects) and performs IO operations on them if they're ready, and
-3. ```run_heartbeats``` --> checks if all selectables are alive (by invoking a heartbeat method on a selectable).
+1. `run_timers` --> runs the registered `@timers` when a specified point in time has been reached,
+2. `crank_selectables` --> checks the read/write state of `@selectables` (IO objects) and performs IO operations on them if they're ready, and
+3. `run_heartbeats` --> checks if all selectables are alive (by invoking a heartbeat method on a selectable).
 
 Finally, the cleanup is done after the Reactor has finished running (usually done when the process is terminated).
 
 Apart from the initialization and the loop itself, the following three methods called in each iteration of the loop are the foundation of EventMachine.
 
-{% highlight ruby %}
+{% highlight ruby linenos %}
   module EventMachine
     class Reactor
       def run_timers
@@ -149,23 +152,23 @@ Apart from the initialization and the loop itself, the following three methods c
   end
 {% endhighlight %}
 
-The ```crank_selectables``` method is the only interesting one here. It partitions all selectables into two arrays, one with readable and one with writable sockets. It then invokes the ```select``` system call and passes these two arrays to it. The [select](http://ruby-doc.org/core-2.1.2/IO.html#method-c-select)[^2] system call then selects the sockets that are ready for reading or writing and invokes *eventable* reading or writing on them. *Eventable* in this context means a certain number of bytes per cycle.
+The `crank_selectables` method is the only interesting one here. It partitions all selectables into two arrays, one with readable and one with writable sockets. It then invokes the `select` system call and passes these two arrays to it. The [select](http://ruby-doc.org/core-2.1.2/IO.html#method-c-select)[^2] system call then selects the sockets that are ready for reading or writing and invokes *eventable* reading or writing on them. *Eventable* in this context means a certain number of bytes per cycle.
 
-The other two methods are pretty straightforward in their purpose. The ```run_timers``` method executes all code blocks from the ```@timers``` set only once their time-to-execute has been reached, while the ```run_heartbeats``` runs the ```heartbeat``` method on each selectable every ```HeartbeatInterval``` seconds. The details of the ```heartbeat``` method are covered further down in this post.
+The other two methods are pretty straightforward in their purpose. The `run_timers` method executes all code blocks from the `@timers` set only once their time-to-execute has been reached, while the `run_heartbeats` runs the `heartbeat` method on each selectable every `HeartbeatInterval` seconds. The details of the `heartbeat` method are covered further down in this post.
 
 These few snippets cover the basic setup and operation of EventMachine, but we should cover a few more patterns at this point so we can see a clearer picture of what EM in its totality is. Most importantly, we'll cover the Loopbreaker, the Heartbeat and the threadpool.
 
-#### The Loopbreaker
+### The Loopbreaker
 
 A **loopbreak is a way to signal the Reactor it should do something**. Why do it this way? Well, since it's running an infinite loop, it can't respond to calls - you can think of it as being deaf to all messages while running. Loopbreaker is a type of a communication channel between the reactor and the outside world. When something outside the loop signals a loopbreak, the reactor stops for a moment and lets other things happen. It does not terminate the loop, it just allows other things to run.
 
-The loopbreak is signaled whenever we schedule something via the ```next_tick``` or ```defer``` methods, since we need to tell the reactor that something has been scheduled. It can then, in turn, run those tasks. 
+The loopbreak is signaled whenever we schedule something via the `next_tick` or `defer` methods, since we need to tell the reactor that something has been scheduled. It can then, in turn, run those tasks. 
 
 However, since it is stuck in an infinite loop, the reactor can't confirm a "hey, you have new stuff to do" type of messages, so we produce a loopbreak signal to command it to check if there are tasks to run.
 
 Here's a (slightly modified [^3]) EventMachine implementation of the loopbreaker:
 
-{% highlight ruby %}
+{% highlight ruby linenos %}
   module EventMachine
     class Reactor
       # ...
@@ -185,15 +188,15 @@ Here's a (slightly modified [^3]) EventMachine implementation of the loopbreaker
   end
 {% endhighlight %}
 
-Internally, a loopbreaker is usually implemented as a one-way IO pipe between entities that are communicating. So, a loopbreak signal is in effect just a few bytes sent over that pipe. When the reactor checks selectables for IO activity, it will see that it has something in the ```LoopbreakReader```, the receiving end of the pipe wrapped in a ```Selectable```, and will start the method to run scheduled blocks.
+Internally, a loopbreaker is usually implemented as a one-way IO pipe between entities that are communicating. So, a loopbreak signal is in effect just a few bytes sent over that pipe. When the reactor checks selectables for IO activity, it will see that it has something in the `LoopbreakReader`, the receiving end of the pipe wrapped in a `Selectable`, and will start the method to run scheduled blocks.
 
-#### The Heartbeat
+### The Heartbeat
 
-A **heartbeat is a way to continuously check the staleness of the selectables**. Every selectable for which a stale state is possible (ie. a long-lived connection) has a ```heartbeat``` method implementation. This method inspects if the connection is stale by checking if there was any activity in a certain specified interval.
+A **heartbeat is a way to continuously check the staleness of the selectables**. Every selectable for which a stale state is possible (ie. a long-lived connection) has a `heartbeat` method implementation. This method inspects if the connection is stale by checking if there was any activity in a certain specified interval.
 
-Here's the implementation for a ```StreamObject``` that represents any socket used for long-lived data streaming.
+Here's the implementation for a `StreamObject` that represents any socket used for long-lived data streaming.
 
-{% highlight ruby %}
+{% highlight ruby linenos %}
   module EventMachine
     class StreamObject < Selectable
       # ...
@@ -207,15 +210,15 @@ Here's the implementation for a ```StreamObject``` that represents any socket us
   end
 {% endhighlight %}
 
-The ```heartbeat``` method checks for inactivity, and if it deduces that the selectable is inactive, it schedules it for closing.
+The `heartbeat` method checks for inactivity, and if it deduces that the selectable is inactive, it schedules it for closing.
 
-#### The threadpool
+### The threadpool
 
-The last thing of interest is the threadpool. Basically, a combination of a queue of tasks, ie. callable objects (blocks), and a pool of Threads that are used to perform those tasks. As we mentioned in the previous post, the threadpool is used to handle blocking IO. Whenever we need to perform a blocking IO call, we do it in a separate Thread. EM's threadpool abstracts this away. We only need to ```defer``` the callable object and EM will take care of it when it can.
+The last thing of interest is the threadpool. Basically, a combination of a queue of tasks, ie. callable objects (blocks), and a pool of Threads that are used to perform those tasks. As we mentioned in the previous post, the threadpool is used to handle blocking IO. Whenever we need to perform a blocking IO call, we do it in a separate Thread. EM's threadpool abstracts this away. We only need to `defer` the callable object and EM will take care of it when it can.
 
 The following three methods represent the entirety of the EM's threadpool implementation.
 
-{% highlight ruby %}
+{% highlight ruby linenos %}
 
 module EventMachine
   def self.defer op = nil, callback = nil, &blk
@@ -230,9 +233,9 @@ module EventMachine
 end
 {% endhighlight %}
 
-The ```defer``` method is used to test if there is a threadpool, and if there is none, it creates the ```@taskqueue```, the ```@resultqueue``` and starts the threadpool creation routine. Afterwards, it simply pushes a task given to it on a task queue.
+The `defer` method is used to test if there is a threadpool, and if there is none, it creates the `@taskqueue`, the `@resultqueue` and starts the threadpool creation routine. Afterwards, it simply pushes a task given to it on a task queue.
 
-{% highlight ruby %}
+{% highlight ruby linenos%}
 module EventMachine
   def self.spawn_threadpool
     until @threadpool.size == @threadpool_size.to_i
@@ -252,9 +255,9 @@ module EventMachine
 end
 {% endhighlight %}
 
-The ```spawn_threadpool``` is the one that actually creates the threadpool. It creates a number of threads and sets up each of them to continuously fetch tasks from the ```@threadqueue```. Since ```Queue#pop``` blocks execution whenever there are no tasks to fetch, threads will wait until there is a task that has to be executed. Once a task to execute is produced, the first thread to fetch [^4] it executes it and pushes the result along with the callback that handles the result to the ```@resultqueue```. It then signals a loopbreak to notify the reactor that it should run the callback that handles the result.
+The `spawn_threadpool` is the one that actually creates the threadpool. It creates a number of threads and sets up each of them to continuously fetch tasks from the `@threadqueue`. Since `Queue#pop` blocks execution whenever there are no tasks to fetch, threads will wait until there is a task that has to be executed. Once a task to execute is produced, the first thread to fetch [^4] it executes it and pushes the result along with the callback that handles the result to the `@resultqueue`. It then signals a loopbreak to notify the reactor that it should run the callback that handles the result.
 
-{% highlight ruby %}
+{% highlight ruby linenos %}
 module EventMachine
   def self.run_deferred_callbacks
     until (@resultqueue ||= []).empty?
@@ -274,7 +277,7 @@ module EventMachine
 end
 {% endhighlight %}
 
-The ```run_deferred_callbacks``` method is not strictly a part of the threadpool system, but since it's tied to it, we'll cover it as such. It's used for running the result handling callbacks. It pops results (along with callbacks) from the ```@resultqueue``` and runs them [^5]. The reason why it's not strictly a part of the threadpool system is that it's also used to run the callbacks scheduled via the ```next_tick``` mechanism. It (thread-safely) consumes the ```@next_tick_queue``` for executables to run until it empties the queue. That odd little ```next_tick``` call in the ensure block is just a way of telling the reactor to keep running and bubble up the exception (and not immediately stop) if one happens.
+The `run_deferred_callbacks` method is not strictly a part of the threadpool system, but since it's tied to it, we'll cover it as such. It's used for running the result handling callbacks. It pops results (along with callbacks) from the `@resultqueue` and runs them [^5]. The reason why it's not strictly a part of the threadpool system is that it's also used to run the callbacks scheduled via the `next_tick` mechanism. It (thread-safely) consumes the `@next_tick_queue` for executables to run until it empties the queue. That odd little `next_tick` call in the ensure block is just a way of telling the reactor to keep running and bubble up the exception (and not immediately stop) if one happens.
 
 ## Next up
 
@@ -283,8 +286,8 @@ I hope I have given you a somewhat understandable explanation of EM's internals 
 Next up, Celluloid and the Actor pattern.
 
 ---
-[^1]: By using the [```IO#fcntl```](http://ruby-doc.org/core-2.1.2/IO.html#method-i-fcntl) method which is just a Ruby wrapper over the [```fcntl```](http://linux.die.net/man/2/fcntl) system call for manipulating file descriptors.
-[^2]: The [```IO#select```](http://ruby-doc.org/core-2.1.2/IO.html#method-c-select) method is just a thin wrapper over the [```select```](http://linux.die.net/man/2/select) system call.
+[^1]: By using the [`IO#fcntl`](http://ruby-doc.org/core-2.1.2/IO.html#method-i-fcntl) method which is just a Ruby wrapper over the [`fcntl`](http://linux.die.net/man/2/fcntl) system call for manipulating file descriptors.
+[^2]: The [`IO#select`](http://ruby-doc.org/core-2.1.2/IO.html#method-c-select) method is just a thin wrapper over the [`select`](http://linux.die.net/man/2/select) system call.
 [^3]: EventMachine previously used a Pipe, but now uses a UDP socket to signal a loopbreak, because pipes aren't available on Windows machines. I find the Pipe implementation cleaner and more elegant, so I present it as such here.
 [^4]: Fetching is done in a thread-safe manner since Ruby's Queue implementation is thread-safe. That's why you should always use it instead of rolling your own custom Array backed queue.
 [^5]: It's important to note that there needn't actually be a callback since we don't need to provide one when deferring, especially if we don't care about the result.

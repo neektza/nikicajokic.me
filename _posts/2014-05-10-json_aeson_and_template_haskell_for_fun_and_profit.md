@@ -12,39 +12,93 @@ There are a few libraries that parse and encode JSON in Haskell, but recently on
 
 [Aeson](http://hackage.haskell.org/package/aeson) performs better than its older relative [JSON](http://hackage.haskell.org/package/json), all while simplifying the implementation of encoding/decoding functions by using Template Haskell.
 
-Since all this imposing knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entities in the following examples. Consequently, we have an ```Event``` type that was obtained by querying the */2/events*  API endpoint (example [response](https://gist.github.com/neektza/f76e8a44267a669f564a#file-event-json)), and an ```RSVP``` type, which we get from the */2/rsvps* API endpoint (example [response](https://gist.github.com/neektza/f76e8a44267a669f564a#file-rsvp-json)).
+Since all this imposing knowledge came out of an effort to build a *Meetup* API client library [^2] in Haskell, we'll be dealing with *Meetup* entities in the following examples. Consequently, we have an `Event` type that was obtained by querying the */2/events*  API endpoint (example [response](https://gist.github.com/neektza/f76e8a44267a669f564a#file-event-json)), and an `RSVP` type, which we get from the */2/rsvps* API endpoint (example [response](https://gist.github.com/neektza/f76e8a44267a669f564a#file-rsvp-json)).
 
-# Hard labour
+## Hard labour
 
-The regular way to parse JSON with Aeson is to implement a ```FromJSON``` instance for the data type we want to build from JSON. It tells Aeson what JSON fields to pluck from and how to translate those fields to a Haskell construct. Inversely, if we wanted to encode a type to JSON, we'd have to implement a ```ToJSON``` instance.
+The regular way to parse JSON with Aeson is to implement a `FromJSON` instance for the data type we want to build from JSON. It tells Aeson what JSON fields to pluck from and how to translate those fields to a Haskell construct. Inversely, if we wanted to encode a type to JSON, we'd have to implement a `ToJSON` instance.
 
-Here's an example of how to manually implement a ```FromJSON``` instance for an ```Event``` type.
+Here's an example of how to manually implement a `FromJSON` instance for an `Event` type.
 
-{% gist neektza/f76e8a44267a669f564a Event.hs %}
 
-If you are interested, you can load the file into the GHCi REPL with ```$ ghci src/Types/Event.hs``` and see what the ```sampleEvent``` spits out.
+{% highlight haskell linenos %}
 
-As you can see, following the ```Event``` type definition, there's a definition of the ```parseJSON``` function, and it looks like the ```parseJSON``` definition could be categorized as a boilerplate code. Why? Because each time we add or remove a record field in the ```Event``` data constructor, we also need to change the ```parseJSON``` definition accordingly.
+{-# LANGUAGE OverloadedStrings #-}
+ 
+module Meetup.Types.Event where
+ 
+import Data.Text
+import Data.Aeson
+import Control.Applicative  ((<$>), (<*>))
+import Control.Monad        (mzero)
+import Data.ByteString.Lazy
+ 
+data Event = Event { name        :: Text
+		   , created     :: Int
+		   , event_url   :: Text
+		   } deriving (Show, Eq)
+ 
+instance FromJSON Event where
+  parseJSON (Object v) = Event
+                          <$> v .: "name"
+                          <*> v .: "created"
+                          <*> v .: "event_url"
+  parseJSON _          = mzero
+ 
+ 
+-- Sample
+sampleEvent = do
+	sample_event_json <- Data.ByteString.Lazy.readFile "responses/event.json"
+	let event = decode sample_event_json :: Maybe Event
+	return event
 
-There is more. If the example above contained a ```ToJSON``` definition, we'd have to change it as well. Now, stretch your imagination for a second and imagine we had more than one type. This situation could get out of hand very quickly and even though the type system can inform us of it, it would still be annoying.
+{% endhighlight %}
 
-# Making the GHC work for you
+If you are interested, you can load the file into the GHCi REPL with `$ ghci src/Types/Event.hs` and see what the `sampleEvent` spits out.
+
+As you can see, following the `Event` type definition, there's a definition of the `parseJSON` function, and it looks like the `parseJSON` definition could be categorized as a boilerplate code. Why? Because each time we add or remove a record field in the `Event` data constructor, we also need to change the `parseJSON` definition accordingly.
+
+There is more. If the example above contained a `ToJSON` definition, we'd have to change it as well. Now, stretch your imagination for a second and imagine we had more than one type. This situation could get out of hand very quickly and even though the type system can inform us of it, it would still be annoying.
+
+## Making the GHC work for you
 
 Feeling tired after all the hard work we had to do previously, it kind of makes us wonder if there's an easier way to do this... Turns out there is, and it's called Template Haskell (called TH by friends).
 
 I won't go into the *whats* and the *hows* of TH (mainly since I myself don't completely understand it yet), but you can think of it as Lisp's macro system but with types. Because everything is better with some types.
 
-Long story short, using the ```Data.Aeson.TH``` package we can make the GHC define the FromJSON and ToJSON instances at compile-time for us, and this is how:
+Long story short, using the `Data.Aeson.TH` package we can make the GHC define the FromJSON and ToJSON instances at compile-time for us, and this is how:
 
-{% gist neektza/f76e8a44267a669f564a RSVP.hs %}
+{% highlight haskell linenos %}
 
-As before, you can load up the code into GHCi with ```$ ghci src/Types/Event.hs``` and check the result by calling ```sampleRSVP```.
+{-# LANGUAGE OverloadedStrings,TemplateHaskell #-}
+ 
+module Meetup.Types.RSVP where
+ 
+import Data.Aeson
+import Data.Aeson.TH
+import qualified Data.Text as T
+import qualified Data.ByteString.Lazy as BL
+ 
+data RSVP = RSVP { response :: T.Text
+		 , created  :: Int
+		 } deriving (Show, Eq)
+ 
+$(deriveJSON defaultOptions ''RSVP)
+ 
+sampleRSVP = do
+	sample_event_json <- BL.readFile "responses/rsvp.json"
+	let rsvp = decode sample_event_json :: Maybe RSVP
+	return rsvp
 
-We can see in the example above that, even though there is no ```fromJSON``` definition, we're still able to decode the ```ByteString``` to JSON. We still need to import ```Data.Aeson``` to have access to the ```decode``` function.
+{% endhighlight %}
 
-Not much convincing is needed to see that this approach is much better than the previous one. Once ```Event``` or ```RSVP``` types change, GHC changes the ```FromJSON``` and ```ToJSON``` definitions at our demand.
+As before, you can load up the code into GHCi with `$ ghci src/Types/Event.hs` and check the result by calling `sampleRSVP`.
 
-# Conclusion
+We can see in the example above that, even though there is no `fromJSON` definition, we're still able to decode the `ByteString` to JSON. We still need to import `Data.Aeson` to have access to the `decode` function.
+
+Not much convincing is needed to see that this approach is much better than the previous one. Once `Event` or `RSVP` types change, GHC changes the `FromJSON` and `ToJSON` definitions at our demand.
+
+## Conclusion
 
 Reduce boilerplate wherever possible, since the tools to do it are already there. You'll be happier and your general well-being will improve.
 

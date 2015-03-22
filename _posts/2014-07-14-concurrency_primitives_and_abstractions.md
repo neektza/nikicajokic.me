@@ -21,9 +21,9 @@ In addition to threads, Ruby has a [coroutine](http://www.ruby-doc.org/core-2.1.
 
 To help differentiate  between thread behaviour vs. fiber behaviour, let's build the classic producer-consumer pattern using each of those to implement it.
 
-We'll introduce a dummy AddOneTask implementation to serve our purposes of sending tasks to run over a queue. The task keeps an internal counter and on each invocation of ```perform``` just increments the counter.
+We'll introduce a dummy AddOneTask implementation to serve our purposes of sending tasks to run over a queue. The task keeps an internal counter and on each invocation of `perform` just increments the counter.
 
-{% highlight ruby %}
+{% highlight ruby linenos %}
   class AddOneTask
     @@total = 0
     def initialize
@@ -49,7 +49,7 @@ We'll introduce a dummy AddOneTask implementation to serve our purposes of sendi
 
 Let's now build the producer and the consumer using threads.
 
-{% highlight ruby %}
+{% highlight ruby linenos %}
   require 'thread'
   require_relative 'add_one_task'
   scheduled = []; performed = []; producers = []; consumers = []
@@ -70,8 +70,9 @@ Let's now build the producer and the consumer using threads.
   (producers + consumers).each { |t| t.join }
 {% endhighlight %}
 
-{% highlight bash %}
-lappy :: sandbox/ruby/concurrency > ruby producer_consumer_threads.rb
+
+{% highlight text %}
+~ lappy :: sandbox/ruby/concurrency > ruby producer_consumer_threads.rb
 Scheduling task
 Scheduling task
 Scheduling task
@@ -92,7 +93,7 @@ A few notes about the example above:
 
 Next up, the fiber implementation of the pattern.
 
-{% highlight ruby %}
+{% highlight ruby linenos %}
   require 'fiber'
   require_relative 'add_one_task'
   scheduled = []; performed = []
@@ -119,6 +120,8 @@ Next up, the fiber implementation of the pattern.
   producer.resume
 {% endhighlight %}
 
+<br/>
+
 {% highlight bash %}
 lappy :: sandbox/ruby/concurrency > ruby producer_consumer_fibers.rb
 Scheduling task
@@ -134,13 +137,13 @@ Task performed, state 5
 All fibers dead? true
 {% endhighlight %}
 
-In contrast to the previous example, fibers need explicit scheduling (even starting them needs to be explicit). We explicitly transfer control from one fiber to another by using ```fiber.transfer```, ```fiber.resume``` and ```Fiber.yield```. In the example above, we have a ping-pong-like transfer of control between the ```producer``` and the ```scheduler```. Whenever the ```scheduler``` gets the execution back, it picks a ```consumer``` to run. Even though they are harder to produce since we have control over execution, race conditions in fiber-based code are still possible (one example being [this](https://gist.github.com/raggi/1220800)).
+In contrast to the previous example, fibers need explicit scheduling (even starting them needs to be explicit). We explicitly transfer control from one fiber to another by using `fiber.transfer`, `fiber.resume` and `Fiber.yield`. In the example above, we have a ping-pong-like transfer of control between the `producer` and the `scheduler`. Whenever the `scheduler` gets the execution back, it picks a `consumer` to run. Even though they are harder to produce since we have control over execution, race conditions in fiber-based code are still possible (one example being [this](https://gist.github.com/raggi/1220800)).
 
 Considering the simplicity of the implementations above, it seems that threads and fibers alone are enough to build complex systems, and although you could certainly build one using only these constructs, it's ill-advised to do so. There are a couple of noteworthy higher-level concurrency constructs in Ruby worth considering that solve many of the common problems one comes across while building a concurrent system - synchronization of shared state, cross-thread messaging, etc.
 
 ## Concurrency abstractions <small>(reactors and actors)</small>
 
-#### EventMachine
+### EventMachine
 
 The first of the mentioned abstractions is the venerable *EventMachine* - Ruby implementation of the [Reactor pattern](http://en.wikipedia.org/wiki/Reactor_pattern). So, basically, node.js built in Ruby, before node.js was cool.
 
@@ -150,11 +153,11 @@ First iteration of the aforementioned system was implemented using *EventMachine
 
 This worked fine for a while, but as requirements changed and the domain grew bigger, it became hard to model and implement the requirements using handlers and callbacks. These techniques, while not inherently bad, often result in code that is very nested and execution that is non-sequential, especially if you're not using deferrables/promises as a facelift for the asynchronous parts of the code.
 
-Another problem with the *EventMachine* is that the library ecosystem is considerably poorer, since every library that performs any form of IO must do non-blocking operations and has to be specifically tailored to work properly with EM's reactor loop. A prime example of that is ```em-http-request```. Since we can't do blocking IO in a reactor loop (because it blocks the whole app by blocking the loop), we must rely on a library built specifically for EM, which robs us of using any of the cool HTTP libraries in Ruby.
+Another problem with the *EventMachine* is that the library ecosystem is considerably poorer, since every library that performs any form of IO must do non-blocking operations and has to be specifically tailored to work properly with EM's reactor loop. A prime example of that is `em-http-request`. Since we can't do blocking IO in a reactor loop (because it blocks the whole app by blocking the loop), we must rely on a library built specifically for EM, which robs us of using any of the cool HTTP libraries in Ruby.
 
 That particular problem hugely affects its usability, since one of Ruby's most important selling points is exactly the richness of the library ecosystem. This was the primary reason to start looking for other options to deal with the concurrent domain of the problem.
 
-#### Celluloid
+### Celluloid
 
 Fortunately, alternatives exist, the most notable being Celluloid. Inspired by the Erlang programming language and Scala's Akka library, Celluloid brings a lot of nice features to Ruby, most importantly a very OOP-like concurrency model and a fault-tolerance subsystem that brings supervisors and supervision trees to the table. Along with these, it has support for futures (analogous to EM's deferrables and node's promises) so you get the best of both worlds.
 
