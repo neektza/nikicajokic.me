@@ -85,9 +85,12 @@ body {
 
 				span {
 					display: inline-block;
-					line-height: 4em;
 					height: 4em;
 				}
+
+				@media (min-width: 615px) { span { line-height: 4em; } }
+				@media (min-width: 581px) and (max-width: 614px) { span { padding-top: 1.4em; } }
+				@media (max-width: 580px) { span { padding-top: 0.8em; } }
 			}
 
 			.post-description {
@@ -166,6 +169,8 @@ body {
 		.entry {
 			margin: 6em auto;
 			width: 55%;
+			@media (max-width: 900px) { width: 65%; }
+			@media (max-width: 600px) { width: 80%; }
 
 			.entry-title { }
 
@@ -220,7 +225,7 @@ body {
 	}
 
 	.footer-wrapper {
-		position: absolute;
+		position: relative;
 		height: 12em;
 		width: 100%;
 		left: 0px;
@@ -229,9 +234,9 @@ body {
 		@include background-image(url("/images/page_header_footer.png"));
 
 		footer {
+			width: 100%;
+			color: gray;
 			font-size: 1em;
-			font-color: grey;
-			width: 50%;
 			margin: auto;
 			text-align: center;
 			@include vertical-align;
