@@ -1,0 +1,258 @@
+---
+---
+
+@import "bourbon/bourbon";
+@import "base/base";
+@import "neat/neat";
+@import "font-awesome/font-awesome";
+
+
+body {
+	font-size:62.5%;
+	margin: 0;
+
+	.content-container {
+		position: relative;
+		overflow: hidden;
+	}
+
+	.highlight .lineno {
+		color: #ccc;
+		display: inline-block;
+		padding: 0 5px;
+		border-right:1px solid #ccc;
+	}
+
+	// @include background-image(url("/images/page_header_footer.png"));
+	// background-size: cover;
+	// background-repeat: no-repeat;
+
+	#navigation {
+		@include outer-container;
+		@include clearfix;
+		height: 50px;
+		width: 100%;
+		max-width: 1000em;
+		background-color: white;
+		padding: 0 30px;
+
+		.site-title {
+			float: left;
+			font: normal 2.5em $base-font-family;
+			span {
+				margin: 0;
+				height: 50px;
+				line-height: 50px;
+				font-weight: 300;
+				a { color: orange }
+			}
+		}
+		
+
+		.site-links {
+			font: 1.8em $base-font-family;
+			height: 100%;
+			float: right;
+			li {
+				margin-left: 1.5em;
+				float: left;
+				a {
+					display: block;
+					height: 50px;
+					line-height: 50px;
+					border-bottom: 5px solid white;
+					color: rgb(74,74,74);
+					&:hover, &.current {
+						border-bottom-color: orange;
+					}
+				}
+			}
+		}
+	}
+
+	#main {
+
+		.description {
+			background-size: cover;
+			background-repeat: no-repeat;
+
+			.site-description {
+				@include background-image(url("/images/page_header_footer.png"));
+				text-align: center;
+				color: rgba(255, 255, 255, 0.7);
+				font: bold italic 2.4em $masthead-font-family;
+
+				span {
+					display: inline-block;
+					line-height: 4em;
+					height: 4em;
+				}
+			}
+
+			.post-description {
+				position: relative;
+				height: 150px;
+				width: 100%;
+
+				@include background-image(url("/images/article_header_footer.png"));
+				background-size: 100% auto;
+				background-position: 0 -30%;
+
+				.image {
+					position: absolute;
+					bottom: -30px;
+					left: 150px;
+					border: 2px solid white;
+				} 
+
+				.info {
+					position: absolute;
+					bottom: 0px;
+					left: 310px;
+
+					font-size: 1.4em;
+					color: $filip-gray;
+
+					.author-date-comments {
+						margin-bottom: 14px;
+					}
+					
+					.tags {
+						margin-bottom: -25px;
+					}
+				}
+
+				.clearfix { @include clearfix; }
+			}
+		}
+
+
+		width: 100%;
+	
+		.article-list {
+			width: 100%;
+			background-color: white;
+			padding: 5em 0;
+
+			ul {
+				width: 75%;
+				text-align: center;
+				margin: 0 auto;
+
+				.entry-date {
+					font: bold italic 1.4em $masthead-font-family;
+					color: rgb(155, 155, 155);
+				}
+
+				.entry-title {
+					font: 2.2em $base-font-family;
+					color: rgb(85,85,85);
+				}
+
+				.entry:hover {
+					.entry-title, .entry-date {
+						color: orange;
+					}
+				}
+			}
+		}
+
+		.entry {
+			margin: 6em auto;
+			width: 55%;
+
+			.entry-title {
+			}
+
+			.entry-body {
+				.entry-share {
+					float: left;
+					font-size: 6em;
+					a {
+						display: block;
+						color: $light-gray;
+						&:hover { color: orange }
+					}
+				}
+
+				.entry-content {
+					font-size: 1.8em;
+					margin: 0 auto 6em;
+				}
+
+				@include clearfix;
+			}
+
+			ul {
+				list-style: inside disc;
+				padding-left: 1em;
+				margin-bottom: 1em;
+			}
+
+			h1 {
+				font-size: 4em;
+			}
+			h2 {
+				font-size: 2em;
+			}
+			h3 {
+				font-size: 1em;
+				font-weight: bold;
+			}
+
+			.footnotes ol {
+				list-style: decimal;
+				font-size: 80%;
+				padding-left: 15px;
+			}
+		}
+
+
+
+		.load-more {
+			display: block;
+			color: orange;
+			margin: 2em auto 0;
+			font-size: 2em;
+			font-weight: 300;
+			width: 184px;
+			height: 57px;
+			line-height: 57px;
+			text-align: center;
+			border: 1px solid orange;
+		}
+	}
+
+	.footer-wrapper {
+		position: absolute;
+		height: 12em;
+		width: 100%;
+		left: 0px;
+		bottom: 0px;
+		background-size: cover;
+		@include background-image(url("/images/page_header_footer.png"));
+
+		footer {
+			font-size: 1em;
+			font-color: grey;
+			width: 50%;
+			margin: auto;
+			text-align: center;
+			@include vertical-align;
+
+			.social-icons {
+				font-size: 4em;
+				a {
+					color: gray;
+					&:hover { color: orange }
+				}
+			}
+
+			.copyright {
+				color: rgba(255, 255, 255, 0.3);
+				margin-top: 2em;
+				font-size: 0.8em;
+			}
+		}
+	}
+}

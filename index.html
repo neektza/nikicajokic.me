@@ -1,10 +1,20 @@
 ---
 layout: page
-description: "A blog about programming and computer science"
+search_omit: true
 ---
 
-<ul class="post-list">
-	{% for post in site.posts %} 
-		<li><article><a href="{{ post.url }}">{{ post.title }} <span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></span></a></article></li>
+<div class="article-list">
+	<ul class="post-list">
+		{% for post in paginator.posts limit:25 %}
+			<li><a class="entry" href="{{ post.url }}">
+			<div class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></div>
+			<div class="entry-title">{{ post.title }}</div>
+		</a></li>
+		<hr/>
 	{% endfor %}
-</ul>
+	</ul>
+
+	{% if paginator.next_page %}
+		<a class="load-more" href="{{ paginator.next_page_path }}">Load More</a>
+{% endif %}
+</div>

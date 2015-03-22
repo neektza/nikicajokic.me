@@ -1,0 +1,32 @@
+{% if page.author %}
+	{% assign author = site.data.authors[page.author] %}
+{% else %}
+	{% assign author = site.owner %}
+{% endif %}
+
+<header class="description">
+	<div class="post-description">
+		<div class="image">
+			<div class="author-avatar">
+				<img src="/images/{{ author.avatar }}" class="bio-photo" alt="{{ author.name }} bio photo"></a>
+			</div>
+		</div>
+
+		<div class="info">
+			<div class="author-date-comments">
+				<span class="author vcard">By <span class="fn">{{ author.name }}</span></span> |
+				<span class="entry-date date published"><time datetime="{{ page.date | date_to_xmlschema }}"> <i class="fa fa-pencil"></i> {{ page.date | date: "%B %d, %Y" }}</time></span> |
+				{% if page.modified %}
+					<span class="entry-date date modified"><time datetime="{{ page.modified }}"> <i class="fa fa-wrench"></i> {{ page.modified | date: "%B %d, %Y" }}</time></span>
+				{% endif %}
+				{% comment %} <span class="entry-comments"><i class="fa fa-comment-o"></i> <a href="#disqus_thread">Comment</a></span> {% endcomment %}
+			</div>
+
+			<div class="tags">
+				<span class="entry-tags">{% for tag in page.tags %}<a href="{{ site.url }}/tags/#{{ tag }}" title="Pages tagged {{ tag }}">{{ tag }}</a>{% unless forloop.last %} / {% endunless %}{% endfor %}</span>
+			</div>
+		</div>
+
+		<div class="clearfix"></div>
+	</div>
+</header>
