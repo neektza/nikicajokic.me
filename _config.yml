@@ -2,9 +2,7 @@
 
 title:              PLT Confusion
 description:        '"Confusion is just ignorance leaving the brain"'
-# logo:               lambda-logo.png
 search:             true
-disqus_shortname:   pltconfusion
 url:                http://pltconfusion.com
 
 # Jekyll configuration
@@ -39,6 +37,7 @@ owner:
   github: neektza
   linkedin: nikicajokic
   stackexchange: http://stackexchange.com/users/442780/neektza 
+  disqus_shortname: pltconfusion
   google:
     plus: neektza
     analytics: UA-41474479-1

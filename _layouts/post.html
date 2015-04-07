@@ -26,13 +26,13 @@
 							{{ content }}
 						</div>
 					</div>
+					{% include disqus_comments.html %}
 
 				</article>
 			</div>
 
 			{% include footer.html %}
 		</div>
-
-		{% include scripts.html %}	        
 	</body>
+	{% include scripts.html %}	        
 </html>

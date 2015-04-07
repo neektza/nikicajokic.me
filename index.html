@@ -6,15 +6,14 @@ search_omit: true
 <div class="article-list">
 	<ul class="post-list">
 		{% for post in paginator.posts limit:25 %}
-			<li><a class="entry" href="{{ post.url }}">
+			<li><a class="entry-wrap" href="{{ post.url }}">
 			<div class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></div>
 			<div class="entry-title">{{ post.title }}</div>
 		</a></li>
-		<hr/>
 	{% endfor %}
 	</ul>
 
 	{% if paginator.next_page %}
 		<a class="load-more" href="{{ paginator.next_page_path }}">Load More</a>
-{% endif %}
+	{% endif %}
 </div>

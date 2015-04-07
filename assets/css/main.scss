@@ -8,7 +8,10 @@
 
 
 body {
-	font-size:62.5%;
+	font-size: 62.5%;
+	@media (min-height: 600px) { min-height: 100vh; }
+
+	position: relative;
 	margin: 0;
 
 	.content-container {
@@ -32,16 +35,14 @@ body {
 		@include clearfix;
 		height: 50px;
 		width: 100%;
-		max-width: 1000em;
+		max-width: 620px;
 		background-color: white;
-		padding: 0 30px;
+		@media (max-width: $tablet-width) { padding: 0 20px; }
 
 		.site-title {
 			float: left;
 			font: normal 2.5em $base-font-family;
-			@media (max-width: $smartphone-width) {
-				font-size: 2em;
-			}
+			@media (max-width: $tablet-width) { font-size: 2em; }
 			span {
 				margin: 0;
 				height: 50px;
@@ -54,7 +55,7 @@ body {
 
 		.site-links {
 			font: 1.8em $base-font-family;
-			@media (max-width: 400px) {
+			@media (max-width: $tablet-width) {
 				font-size: 1.44em;
 			}
 			height: 100%;
@@ -78,6 +79,7 @@ body {
 
 	#main {
 		width: 100%;
+		position: relative;
 
 		.description {
 			background-size: cover;
@@ -85,6 +87,7 @@ body {
 
 			.site-description {
 				@include background-image(url("/images/page_header_footer.png"));
+				background-position: 50% 50%;
 				text-align: center;
 				color: rgba(255, 255, 255, 0.7);
 				font: bold italic 2.4em $masthead-font-family;
@@ -94,14 +97,14 @@ body {
 					padding: 0.8em 0.5em;
 				}
 
-				@media (min-width: 615px) {
+				@media (min-width: $desktop-width) {
 					span { line-height: 4em; }
 				}
 			}
 
 			.post-description {
 				width: 100%;
-				@media (min-width: 615px) {
+				@media (min-width: $desktop-width) {
 					padding-top: 30px;
 				}
 
@@ -113,21 +116,22 @@ body {
 					margin: 0px auto;
 					text-align: center;
 					width: 100%;
-					@media (min-width: 615px) { width: 55%; }
+					@media (min-width: $desktop-width) { width: 55%; }
 					padding: 1em 0;
+					max-width: 620px;
 
 					img {
 						border: 2px solid white;
 						margin-bottom: -50px;
 						display: none;
 
-						@media (min-width: 615px) {
+						@media (min-width: $desktop-width) {
 							display: block;
 						}
 					}
 
 					.info {
-						@media (min-width: 615px) {
+						@media (min-width: $desktop-width) {
 							text-align: left;
 							position: absolute;
 							bottom: -25px;
@@ -142,7 +146,7 @@ body {
 						.tags {
 							text-transform: uppercase;
 							a { color: gray }
-							@media (min-width: 615px) {
+							@media (min-width: $desktop-width) {
 								margin-top: 40px;
 								margin-bottom: -15px;
 							}
@@ -160,7 +164,6 @@ body {
 			width: 55%;
 			font-size: 1.8em;
 		}
-
 	
 		.article-list {
 			width: 100%;
@@ -172,33 +175,49 @@ body {
 				text-align: center;
 				margin: 0 auto;
 
+				li {
+					margin: 0 auto;
+					max-width: 620px;
+					border-bottom: 1px solid #ddd;
+					&:last-child {
+						border-bottom: none;
+					}
+				}
+
 				.entry-date {
 					font: bold italic 1.4em $masthead-font-family;
 					color: rgb(155, 155, 155);
 				}
 
 				.entry-title {
-					font: 2.2em $base-font-family;
+					font: 2.5em $base-font-family;
 					color: rgb(85,85,85);
 				}
 
-				.entry:hover {
-					.entry-title, .entry-date {
-						color: orange;
+				.entry-wrap {
+					padding: 25px 0;
+					display: block;
+					&:hover {
+						.entry-title, .entry-date {
+							color: orange;
+						}
 					}
 				}
 			}
 		}
 
 		.entry {
-			@media (max-width: 615px) {
+			@media (max-width: $desktop-width) {
 				margin: 4em auto;
 			}
 			margin: 6em auto;
+			padding-bottom: 6em;
 
 			width: 55%;
 			@media (max-width: 900px) { width: 65%; }
 			@media (max-width: 600px) { width: 80%; }
+
+			max-width: 620px;
 
 			.entry-body {
 				.entry-content {
@@ -227,18 +246,18 @@ body {
 			}
 
 			h1 {
-				@media (min-width: 615px) { font-size: 4em }
+				@media (min-width: $desktop-width) { font-size: 4em }
 				font-size: 3em;
 			}
 
 			h2 {
-				@media (min-width: 615px) { font-size: 2em }
-				font-size: 1.5em;
+				@media (min-width: $desktop-width) { font-size: 1.4em }
+				font-size: 1.2em;
 			}
 
 			h3 {
-				@media (min-width: 615px) { font-size: 1em }
-				font-size: 0.75em;
+				@media (min-width: $desktop-width) { font-size: 1.2em }
+				font-size: 1em;
 				font-weight: bold;
 			}
 
@@ -248,8 +267,6 @@ body {
 				p { display: inline; }
 			}
 		}
-
-
 
 		.load-more {
 			display: block;
@@ -266,12 +283,13 @@ body {
 	}
 
 	.footer-wrapper {
-		position: relative;
+		position: absolute;
 		height: 12em;
 		width: 100%;
 		left: 0px;
 		bottom: 0px;
 		background-size: cover;
+		background-position: 50% 100%;
 		@include background-image(url("/images/page_header_footer.png"));
 
 		footer {
@@ -280,6 +298,7 @@ body {
 			font-size: 1em;
 			margin: auto;
 			text-align: center;
+
 			@include vertical-align;
 
 			.social-icons {
@@ -297,4 +316,6 @@ body {
 			}
 		}
 	}
+
+	#disqus_thread { margin-bottom: 12px }
 }
