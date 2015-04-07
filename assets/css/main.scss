@@ -39,6 +39,9 @@ body {
 		.site-title {
 			float: left;
 			font: normal 2.5em $base-font-family;
+			@media (max-width: $smartphone-width) {
+				font-size: 2em;
+			}
 			span {
 				margin: 0;
 				height: 50px;
@@ -51,6 +54,9 @@ body {
 
 		.site-links {
 			font: 1.8em $base-font-family;
+			@media (max-width: 400px) {
+				font-size: 1.44em;
+			}
 			height: 100%;
 			float: right;
 			li {
@@ -85,48 +91,66 @@ body {
 
 				span {
 					display: inline-block;
-					height: 4em;
+					padding: 0.8em 0.5em;
 				}
 
-				@media (min-width: 615px) { span { line-height: 4em; } }
-				@media (min-width: 581px) and (max-width: 614px) { span { padding-top: 1.4em; } }
-				@media (max-width: 580px) { span { padding-top: 0.8em; } }
+				@media (min-width: 615px) {
+					span { line-height: 4em; }
+				}
 			}
 
 			.post-description {
-				position: relative;
-				height: 150px;
 				width: 100%;
+				@media (min-width: 615px) {
+					padding-top: 30px;
+				}
 
 				@include background-image(url("/images/article_header_footer.png"));
 				background-size: 100% auto;
-				background-position: 0 -30%;
 
-				.image {
-					position: absolute;
-					bottom: -30px;
-					left: 150px;
-					border: 2px solid white;
-				} 
+				.pic-and-meta {
+					position: relative;
+					margin: 0px auto;
+					text-align: center;
+					width: 100%;
+					@media (min-width: 615px) { width: 55%; }
+					padding: 1em 0;
 
-				.info {
-					position: absolute;
-					bottom: 0px;
-					left: 310px;
+					img {
+						border: 2px solid white;
+						margin-bottom: -50px;
+						display: none;
 
-					font-size: 1.4em;
-					color: $filip-gray;
-
-					.author-date-comments {
-						margin-bottom: 14px;
+						@media (min-width: 615px) {
+							display: block;
+						}
 					}
-					
-					.tags {
-						margin-bottom: -25px;
+
+					.info {
+						@media (min-width: 615px) {
+							text-align: left;
+							position: absolute;
+							bottom: -25px;
+							left: 165px;
+						}
+
+						margin: auto;
+						text-align: center;
+						font-size: 1.4em;
+						color: $filip-gray;
+
+						.tags {
+							text-transform: uppercase;
+							a { color: gray }
+							@media (min-width: 615px) {
+								margin-top: 40px;
+								margin-bottom: -15px;
+							}
+						}
 					}
+
+					.clearfix { @include clearfix; }
 				}
-
-				.clearfix { @include clearfix; }
 			}
 		}
 
@@ -167,21 +191,27 @@ body {
 		}
 
 		.entry {
+			@media (max-width: 615px) {
+				margin: 4em auto;
+			}
 			margin: 6em auto;
+
 			width: 55%;
 			@media (max-width: 900px) { width: 65%; }
 			@media (max-width: 600px) { width: 80%; }
 
-			.entry-title { }
-
 			.entry-body {
-
 				.entry-content {
 					font-size: 1.8em;
-					padding-bottom: 6em;
 				}
-
 				@include clearfix;
+			}
+			
+			@media (max-width: $smartphone-width) {
+				blockquote {
+					margin: 0;
+					margin-left: 1em;
+				}
 			}
 
 			ul {
@@ -197,13 +227,18 @@ body {
 			}
 
 			h1 {
-				font-size: 4em;
+				@media (min-width: 615px) { font-size: 4em }
+				font-size: 3em;
 			}
+
 			h2 {
-				font-size: 2em;
+				@media (min-width: 615px) { font-size: 2em }
+				font-size: 1.5em;
 			}
+
 			h3 {
-				font-size: 1em;
+				@media (min-width: 615px) { font-size: 1em }
+				font-size: 0.75em;
 				font-weight: bold;
 			}
 
