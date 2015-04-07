@@ -2,11 +2,12 @@
 layout: post
 title: "EventMachine internals and the Reactor pattern"
 tags: concurrency ruby eventmachine
-comments: true
+excerpt: The idea behind EventMachine is a reactor loop which executes callbacks on program events. This post analyzes Ruby's implementation of this idea
 modified: 2015-03-22
+comments: true
 ---
 
-Continuing from the previous posts about [primitives and abstractions](/2014/07/14/concurrency_primitives_and_abstractions), in this part of the series we'll pick a few interesting internals from EventMachine's source code, and explain the core ideas behind these snippets. If you're not familiar with EventMachine, [this](http://javieracero.com/blog/starting-with-eventmachine-i) is a solid series of posts to get you started.
+Continuing from the previous posts about [primitives and abstractions](/2014/07/14/concurrency_primitives_and_abstractions), in this part of the series we'll pick a few interesting internals from EventMachine's source code, and explain the core ideas behind these snippets. If you're not familiar with EventMachine, this is a [solid series of posts](http://javieracero.com/blog/starting-with-eventmachine-i) to get you started.
 
 As we mentioned in a previous post, the main idea behind EventMachine is the reactor loop. EventMachine itself has several implementations of this idea targeting different platforms. In this post we'll focus on **pure Ruby implementation**.
 
@@ -279,7 +280,7 @@ end
 
 The `run_deferred_callbacks` method is not strictly a part of the threadpool system, but since it's tied to it, we'll cover it as such. It's used for running the result handling callbacks. It pops results (along with callbacks) from the `@resultqueue` and runs them [^5]. The reason why it's not strictly a part of the threadpool system is that it's also used to run the callbacks scheduled via the `next_tick` mechanism. It (thread-safely) consumes the `@next_tick_queue` for executables to run until it empties the queue. That odd little `next_tick` call in the ensure block is just a way of telling the reactor to keep running and bubble up the exception (and not immediately stop) if one happens.
 
-## Next up
+**Next up**
 
 I hope I have given you a somewhat understandable explanation of EM's internals and that you have a clearer picture in your mind of what's happening under the hood. If you have any questions or comments, be sure to leave them in the comments section below, and I'll give my best to answer them.
 

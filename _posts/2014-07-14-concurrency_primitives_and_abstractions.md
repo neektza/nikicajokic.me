@@ -1,7 +1,8 @@
 ---
 layout: post
-title: "Concurrency primitives and abstractions in Ruby"
-tags: ruby concurrency threads fibers eventmachine celluloid
+title: Concurrency primitives and abstractions in Ruby
+excerpt: An overview (with examples) of Ruby's fundamental concurrency constructs, threads and fibers and how they relate to more complex concurrency abstractions
+tags: ruby concurrency threads fibers
 comments: true
 ---
 
@@ -167,7 +168,7 @@ Celluloid uses threads internally to represent actors, and fibers to represent t
 
 If you need some of the basics explained, there's a nice intro on github wiki [page](https://github.com/celluloid/celluloid/wiki). You can also look at [this](https://practicingruby.com/articles/gentle-intro-to-actor-based-concurrency) finely crafted blog post about Actor based concurrency in Ruby that even implements a minimal actor system at the end. 
 
-## Next up
+**Next up**
 
 Since there are many posts out there that focus on explaining how to build a concurrent system by relying on these abstractions, in the next two posts we'll focus instead on how these abstractions are implemented from basic building blocks - threads, fibers et al.
 
