@@ -25,9 +25,7 @@ In order to understand the about the Actor model implementation in Ruby we'll an
 
 ## Cell
 
-Everything starts by wrapping the subject's class that's suppost to act as an actor in a `Cell`. Cell is basically a factory class that initializes the Actor, sets up its handlers and passes it allong to the CellProxy object, which it also initializes. The CellProxy object is used to convert the regular Ruby method protocol to inter-actor message protocol.
-
-The CellProxy inherits from the SyncProxy class which defines the protocol for sending synchronous calls to an actor
+Everything starts by wrapping the subject's class that's supposed to act as an actor in a `Cell`. Cell is basically a factory class that initializes the Actor, sets up its handlers and passes it allong to the CellProxy object, which it also initializes. The CellProxy object is used to convert the regular Ruby method invocation protocol to inter-actor message protocol.
 
 allocating[^2]
 
