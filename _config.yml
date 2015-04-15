@@ -1,9 +1,8 @@
 # Site wide configuration
 
-title:              PLT Confusion
-description:        '"Confusion is just ignorance leaving the brain"'
-search:             true
-url:                http://pltconfusion.com
+title: 'PLT Confusion'
+url: 'http://pltconfusion.com'
+description: 'Explorations in programming, computer science and other related topics. Because confusion is just ignorance leaving the brain'
 
 # Jekyll configuration
 
