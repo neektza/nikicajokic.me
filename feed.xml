@@ -33,7 +33,7 @@ sitemap: false
 				<uri>{{ site.url }}</uri>
 				{% if author.email %}<email>{{ author.email }}</email>{% endif %}
 			</author>
-			<description type="html">
+			<description>
 				{{ post.excerpt | xml_escape }}
 			</description>
 		</entry>
