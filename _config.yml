@@ -3,15 +3,28 @@
 title: 'PLT Confusion'
 url: 'http://pltconfusion.com'
 description: 'Explorations in programming, computer science and other related topics. Because confusion is just ignorance leaving the brain'
+tagline: 'Confusion is just ignorance leaving the brain'
 
 # Jekyll configuration
 
 paginate: 25
 paginate_path: "/pages/:num/"
   
-permalink:   /:year/:month/:day/:title/
+permalink:   /:title/
 markdown:    kramdown
 highlighter: pygments
+
+sitemap:
+  file: "/sitemap.xml"
+  exclude:
+      - "/rss.xml"
+      - "/assets/css/main.scss"
+  include_posts:
+      - "/index.html"
+      - "/articles.html"
+      - "/talks.html"
+  change_frequency_name: "change_frequency"
+  priority_name: "priority"
 
 sass:
   sass_dir: _sass
@@ -24,7 +37,7 @@ kramdown:
   use_coderay: false
 
 include: [".htaccess"]
-exclude: ["lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.rb", "tmp", "less", "*.sublime-project", "*.sublime-workspace", "test", "spec", "Gruntfile.js", "package.json", "node_modules", "Gemfile", "Gemfile.lock", "LICENSE", "README.md", "vendor"]
+exclude: ["tags", "lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.rb", "tmp", "less", "*.sublime-project", "*.sublime-workspace", "test", "spec", "Gruntfile.js", "package.json", "node_modules", "Gemfile", "Gemfile.lock", "LICENSE", "README.md", "vendor"]
 
 owner:
   name: Nikica Jokić

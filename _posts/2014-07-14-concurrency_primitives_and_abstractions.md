@@ -3,10 +3,11 @@ layout: post
 title: Concurrency primitives and abstractions in Ruby
 excerpt: An overview (with examples) of Ruby's fundamental concurrency constructs, threads and fibers and how they relate to more complex concurrency abstractions
 tags: ruby concurrency threads fibers
+class: article
 comments: true
 ---
 
-This is part one of the series on Ruby concurrency. Next up, [part two](/2014/10/20/eventmachine_internals_and_the_reactor_pattern) abount EventMachine internals and the reactor pattern.
+This is part one of the series on Ruby concurrency. Next up, part two abount [EventMachine internals and the reactor pattern](/eventmachine_internals_and_the_reactor_pattern).
 
 ## Setting the stage
 
@@ -166,7 +167,7 @@ Since Ruby is a "pure" OO language (everything is an object), model conceptualiz
 
 Celluloid uses threads internally to represent actors, and fibers to represent tasks[^3] (messages) that the actor processes. Since each task can be suspended, actors can process multiple messages and interleave them if needed. We'll not delve too deep into the analysis of how Celluloid manages tasks, since a post that will paint a clearer picture of this process is already in the making.
 
-If you need some of the basics explained, there's a nice intro on github wiki [page](https://github.com/celluloid/celluloid/wiki). You can also look at [this](https://practicingruby.com/articles/gentle-intro-to-actor-based-concurrency) finely crafted blog post about Actor based concurrency in Ruby that even implements a minimal actor system at the end. 
+If you need some of the basics explained, there's a nice intro on GitHub wiki [page](https://github.com/celluloid/celluloid/wiki). You can also look at [this](https://practicingruby.com/articles/gentle-intro-to-actor-based-concurrency) finely crafted blog post about Actor based concurrency in Ruby that even implements a minimal actor system at the end. 
 
 **Next up**
 

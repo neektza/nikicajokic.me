@@ -1,14 +1,14 @@
 ---
 layout: page
-permalink: /articles.html
-title: Articles
-description: "An archive of articles sorted by date."
+permalink: /talks.html
+title: Talks
+description: "An archive of talks sorted by date."
 ---
 
-<div class="article-list">
+<div class="talk-list">
 	<ul class="post-list">
 		{% for post in site.posts %}
-			{% if post.class == "article" %}
+			{% if post.class == "talk" %}
 				{% include post_list_item.html %}
 			{% endif %}
 		{% endfor %}

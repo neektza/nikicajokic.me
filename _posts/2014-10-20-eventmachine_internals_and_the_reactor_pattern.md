@@ -3,11 +3,12 @@ layout: post
 title: "EventMachine internals and the Reactor pattern"
 tags: concurrency ruby eventmachine
 excerpt: The idea behind EventMachine is a reactor loop which executes callbacks on program events. This post analyzes Ruby's implementation of this idea
+class: article
 modified: 2015-03-22
 comments: true
 ---
 
-Continuing from the previous posts about [primitives and abstractions](/2014/07/14/concurrency_primitives_and_abstractions), in this part of the series we'll pick a few interesting internals from EventMachine's source code, and explain the core ideas behind these snippets. If you're not familiar with EventMachine, this is a [solid series of posts](http://javieracero.com/blog/starting-with-eventmachine-i) to get you started.
+Continuing from the previous posts about [primitives and abstractions](/concurrency_primitives_and_abstractions), in this part of the series we'll pick a few interesting internals from EventMachine's source code, and explain the core ideas behind these snippets. If you're not familiar with EventMachine, this is a [solid series of posts](http://javieracero.com/blog/starting-with-eventmachine-i) to get you started.
 
 As we mentioned in a previous post, the main idea behind EventMachine is the reactor loop. EventMachine itself has several implementations of this idea targeting different platforms. In this post we'll focus on **pure Ruby implementation**.
 
@@ -203,7 +204,8 @@ Here's the implementation for a `StreamObject` that represents any socket used f
       # ...
       def heartbeat
         if @inactivity_timeout and @inactivity_timeout > 0
-          and (@last_activity + @inactivity_timeout) < Reactor.instance.current_loop_time
+		  and (@last_activity + @inactivity_timeout)
+		    < Reactor.instance.current_loop_time
           schedule_close true
         end
       end

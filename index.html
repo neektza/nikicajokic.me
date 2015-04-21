@@ -4,17 +4,10 @@ tags: programming compsci computer science software
 excerpt: "Explorations in programming, computer science and other related topics. Because confusion is just ignorance leaving the brain"
 ---
 
-<div class="article-list">
+<div class="article-list" itemscope="" itemtype="http://schema.org/Blog">
 	<ul class="post-list">
-		{% for post in paginator.posts limit:25 %}
-			<li><a class="entry-wrap" href="{{ post.url }}">
-			<div class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %d, %Y" }}</time></div>
-			<div class="entry-title">{{ post.title }}</div>
-		</a></li>
-	{% endfor %}
+		{% for post in paginator.posts %}
+			{% include post_list_item.html %}
+		{% endfor %}
 	</ul>
-
-	{% if paginator.next_page %}
-		<a class="load-more" href="{{ paginator.next_page_path }}">Load More</a>
-	{% endif %}
 </div>

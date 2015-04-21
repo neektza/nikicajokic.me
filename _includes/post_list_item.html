@@ -1,0 +1,6 @@
+<li itemprop="blogPost" itemscope="" itemtype="http://schema.org/BlogPosting" >
+	<a class="entry-wrap" href="{{ post.url }}" itemprop="url">
+		<div class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}" itemprop="datePublished">{{ post.date | date: "%B %d, %Y" }}</time></div>
+		<div class="entry-title" itemprop="name">{{ post.title }}</div>
+	</a>
+</li>

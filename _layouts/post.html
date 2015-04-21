@@ -13,20 +13,27 @@
 			<div id="main" role="main">
 				{% include meta_post.html %}
 
-				<article class="entry">
+				<article class="entry" itemscope="" itemtype="http://schema.org/BlogPosting">
+					<meta itemprop="keywords" content="{{ page.tags | join: ',' }}" />
+					<meta itemprop="description" content="{{ content | strip_html | truncatewords: 40 }}" />
 
-					<div class="entry-title">
+					<div class="entry-title" itemprop="name">
 						<h1>{{page.title}}</h1>
 					</div>
 
 					<div class="entry-body">
 						{% comment %} {% include entry_share.html %} {% endcomment %}
 
-						<div class="entry-content">
+						<div class="entry-content" itemprop="articleBody">
 							{{ content }}
 						</div>
 					</div>
-					{% include disqus_comments.html %}
+
+					{% if post.comments %}
+						{% include disqus_comments.html %}
+					{% else %}
+						<br/>
+					{% endif %}
 
 				</article>
 			</div>

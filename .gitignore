@@ -1,10 +1,11 @@
-.DS_Store
 assets/css/main.min.css
 assets/js/scripts.min.js
 node_modules/
 images/
 examples/
-.bundle/
 _site/
 _images/
+.DS_Store
+.bundle/
 .sass_cache/
+tags

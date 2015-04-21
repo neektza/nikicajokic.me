@@ -3,6 +3,7 @@ layout: post
 title: JSON, Aeson and Template Haskell for fun and profit
 tags: haskell json
 excerpt: You want to parse and generate JSON in Haskell without all the usual typeclass incantations and boilerplate function definitions. This post explains how.
+class: article
 comments: true
 ---
 

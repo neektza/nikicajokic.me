@@ -62,7 +62,7 @@ module Jekyll
             item.description = "<![CDATA[" + post.excerpt.gsub(%r{</?[^>]+?>}, '') + "]]>"
 
             # the whole post content, wrapped in CDATA tags
-            item.content_encoded = "<![CDATA[" + post.content + "]]>"
+            # item.content_encoded = "<![CDATA[" + post.content + "]]>"
 
             item.updated = post.date
           end
