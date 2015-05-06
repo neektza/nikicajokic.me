@@ -164,9 +164,13 @@ body {
 			margin: 0 auto;
 			padding-top: 3em;
 			padding-bottom: 9em;
+			
+			max-width: 620px;
+
 
 			img {
-				margin: 1em 0 !important;
+				margin: 1em auto !important;
+				display: block;
 			}
 		}
 	
