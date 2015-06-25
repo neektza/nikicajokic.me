@@ -4,10 +4,11 @@
 @import "bourbon/bourbon";
 @import "base/base";
 @import "neat/neat";
-@import "font-awesome/font-awesome";
 
 
 body {
+	svg { fill: currentColor; }
+	
 	font-size: 62.5%;
 	@media (min-height: 600px) { min-height: 100vh; }
 
@@ -305,23 +306,28 @@ body {
 			width: 100%;
 			color: gray;
 			font-size: 1em;
-			margin: auto;
 			text-align: center;
 
 			@include vertical-align;
 
 			.social-icons {
-				font-size: 4em;
 				a {
+					margin: 0 5px;
 					color: gray;
-					&:hover { color: orange }
+
+					svg {
+						vertical-align: bottom;
+						width: 48px;
+						height: 48px;
+					}
 				}
+				a:hover { color: orange; }
 			}
 
 			.copyright {
 				color: rgba(255, 255, 255, 0.3);
-				margin-top: 2em;
-				font-size: 0.8em;
+				margin-top: 1em;
+				font-size: 1.4em;
 			}
 		}
 	}

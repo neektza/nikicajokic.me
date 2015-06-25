@@ -1,20 +1,15 @@
-# Authors
+veljko:
+  name: Veljko Dragšić
+  email: veljko.dragsic@gmail.com
+  bio: "..."
+  avatar: bio-photo-veljko.jpg
+  twitter: vdragsic
+  github: vdragsic
 
-billy_rick:
-  name: Billy Rick
-  web: http://thewhip.com
-  email: billy@rick.com
-  bio: "What do you want, jewels? I am a very extravagant man."
-  avatar: bio-photo-2.jpg
-  twitter: extravagantman
-  google:
-    plus: BillyRick
-
-cornelius_fiddlebone:
-  name: Cornelius Fiddlebone
-  email: cornelius@thewhip.com
-  bio: "I ordered what?"
-  avatar: bio-photo.jpg
-  twitter: rhymeswithsackit
-  google:
-    plus: CorneliusFiddlebone
+mihael:
+  name: Mihael Konjević
+  email: konjevic@gmail.com
+  bio: "..."
+  avatar: bio-photo-mihael.jpg
+  twitter: mihaelkonjevic
+  github: retro

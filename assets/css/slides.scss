@@ -1,0 +1,45 @@
+---
+---
+
+@import "bourbon/bourbon";
+
+@include font-face("MuseoSansRounded", "/assets/fonts/museo_sans_rounded/MuseoSansRounded500", normal, italic, $file-formats: otf);
+@include font-face("MuseoSansRounded", "/assets/fonts/museo_sans_rounded/MuseoSansRounded900", bold, $file-formats: otf);
+
+body {
+	font-family: 'Droid Serif';
+}
+
+.remark-slide-number {
+	margin-bottom: 30px;
+}
+
+.remark-container .remark-slide-content {
+	background-image: url(/images/wave_footer.png);
+	background-repeat: repeat-x;
+	background-position: 100% 100%, center;
+	background-size: 54px;
+	background-color: white;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: "MuseoSansRounded", sans-serif;
+	font-size: 8pt;
+}
+
+p small {
+	color: #CCCCCC;
+	font-size: 8pt;
+}
+
+.remark-slide-content ul li {
+	margin: 10px 0 10px 0;
+}
+
+.remark-slide-content ol li {
+	margin: 10px 0 10px 0;
+}
+
+.remark-code, .remark-inline-code {
+	font-family: 'Ubuntu Mono';
+}

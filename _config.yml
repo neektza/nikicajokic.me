@@ -19,6 +19,7 @@ sitemap:
   exclude:
       - "/rss.xml"
       - "/assets/css/main.scss"
+      - "/assets/css/slides.scss"
   include_posts:
       - "/index.html"
       - "/articles.html"

@@ -14,8 +14,18 @@
 				{% include meta_post.html %}
 
 				<article class="entry" itemscope="" itemtype="http://schema.org/BlogPosting">
+					<meta itemprop="author" content="{{ author.name }}" />
 					<meta itemprop="keywords" content="{{ page.tags | join: ',' }}" />
 					<meta itemprop="description" content="{{ content | strip_html | truncatewords: 40 }}" />
+					<meta itemprop="datePublished" content="{{ page.date | date_to_xmlschema }}" />
+
+					{% if page.video %}
+						<meta itemprop="video" content="{{ page.video }}" />
+					{% endif %}
+					
+					{% if page.image %}
+						<meta itemprop="image" content="{{ page.image }}" />
+					{% endif %}
 
 					<div class="entry-title" itemprop="name">
 						<h1>{{page.title}}</h1>
