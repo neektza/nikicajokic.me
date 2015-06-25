@@ -2,6 +2,7 @@
 layout: post
 title: "Actor based concurrency"
 tags: programming ruby concurrency actors
+excerpt: Follow up to a talk about Actor based concurrency I gave a local Ruby meetup.
 class: talk
 comments: false
 ---
@@ -15,5 +16,6 @@ While practicing it you'll also have more chances to recognize the fatty parts o
 
 <iframe src="/talks/actors.html" width="600" height="450"></iframe>
 
----
-[^1]: The slides were build using [remark.js](https://github.com/gnab/remark) and are hosted [locally](/talks/actors.html).
+<br/>
+
+The slides were build using [remark.js](https://github.com/gnab/remark) and are hosted [locally](/talks/actors.html).
