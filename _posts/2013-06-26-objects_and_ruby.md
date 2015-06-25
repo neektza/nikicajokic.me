@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Objects and Ruby"
-tags: programming ruby oop
+tags: ruby oop
 excerpt: Ruby's object orientated nature requires that an object must be instantiated if a function (ie. a method) is to be invoked. That is inconvenient.
 class: article
 comments: true

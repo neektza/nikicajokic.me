@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Meditations on type systems</title>
+    <meta charset="utf-8">
+	<link rel="stylesheet" href="/assets/css/slides.css" type="text/css">
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle, first
+
+# Meditations on type systems
+
+## Nikica Jokić
+
+---
+
+# Agenda
+
+1. Types of type systems
+2. Types of types
+3. Types of polymorphisms
+
+???
+
+Nećemo ulaziti u type theory previše, ovo će bit pregled iz daljine.
+
+---
+
+# Types of type systems
+
+There are a number of ways ways to classify type systems: 
+
+* Static | Dynamic
+
+--
+	* **Static typing** : programs are checked before being executed, and a program might be rejected before it starts.
+
+???
+
+Kompajler će ti reć "Nećeš razbojniče" i natjerat te da probaš ponovo
+
+Logički sustav sa definiranim pravilima.
+
+--
+	* **Dynamic typing** : types of values are checked during execution, and a poorly typed operation might cause the program to halt or otherwise signal an error at run time.
+
+???
+
+Interpreter će se ponašat kao da ti vjeruje da znaš šta radiš ali će ti onda ipak na kraju reć "možda ti ipak nisam trebao vjerovati, to ne radi kako ti misliš da radi".
+
+To što za neki jezik kažemo da je "dynamically typed" ne znači da on interno na vrijednosti ne assigna tipove. On tipove assigna na vrijednosti samo, to radi tokom run tajma.
+
+--
+* Safe | Unsafe
+
+--
+* Strong | Weak (controversial)
+
+???
+
+Ova podjela baš ne drži vodu u akademskim krugovima jer su "Strong" i "Weak" dosta loaded statementi pa se ekipa zna svađat oko toga. Istraživači stoga prefereiraju politički korekte termine poput "Type safe"
+
+--
+
+*Runtime is a little late to find out whether you have a landing gear.*
+
+
+---
+
+# Safe | Unsafe
+
+--
+* **Memory un-safe** language : supports arbitrary pointer arithmetic, casting, and deallocation.
+
+???
+
+Čim možete sami prtljat po memoriji, bez da vas type sustav tu spriječi da napravite glupost, jezik se smatra type unsafe jezikom.
+
+
+Primjeri:
+
+* pointer aritmetika
+* type-castovi iz jednog tipa u drugi C-u.
+
+--
+* **Memory-safe** language : does not allow programs to access memory that has not been assigned for their use. Either using compile time or run time checks.
+
+???
+
+S druge strane, ako vam type sustav ne dopušta takve stvari, jezik se smatra type safe jezikom"
+Većina jezika memory errore hendla u run tajmu putem Garbage collectora, ali ima zanimljivih modernih jezika koji to rade u compile tajmu (**Rust**).
+
+--
+
+Types of memory errors:
+
+--
+- buffer overflow,
+
+--
+- dynamic memory errors (dangling pointer, double free, invalid free, null-pointer accesses),
+
+--
+- uninitialized variables (wild pointers),
+
+--
+- out of memory errors (stack overflow, allocation failures).
+
+---
+
+# Safe | Unsafe : Rust
+
+```rust
+
+fn foo() {
+    let v = vec![1, 2, 3];
+}
+```
+
+```rust
+type Row = Vec<i64>;
+
+fn fill(&mut table: HashMap<i64, &mut Row>, id: i64) -> HashMap<i64, &mut Row> {
+	let mut r:Row = vec![212314143, 642423552, 934235534];
+    table.insert(key, &mut r);
+}
+```
+
+???
+
+Ownership sustav: borrow, move
+
+Borrow - nitko ne može pristupati referenci dok joj vi pristupate.
+
+Move - referenca je sad vaša.
+
+Memory management bez garbage collectora - zvuči super kul za određene domene.
+
+
+---
+
+# Weak | Strong : Quiz!
+
+If simple operations do not behave in a way that one would expect, a programming language can be said to be "weakly typed". For example, consider the following program: x = "5" + 6
+
+--
+* Java, Javascript: x evals to "56"
+
+--
+* Perl, PHP: x evals to 11
+
+--
+* C: x evals to pointer (memory address)
+
+--
+* Ruby, Python: program fails during run time
+
+--
+* Haskell, Ocaml, Rust: program fails during compile time
+
+???
+
+* WEAK + STATIC, Java, Javascript: convert 6 to a string, and concatenate the two arguments to produce the string "56"
+* WEAK + DYNAMIC, Perl, PHP: convert "5" to a number, and add the two arguments to produce the number 11
+* WEAK + STATIC + UNSAFE, C: convert the string "5" to a pointer representing where the string is stored within memory, and add 6 to that value to produce an address in memory
+* STRONG + DYNAMIC, Ruby, Python: fail during execution, saying that the two operands have incompatible type
+* STRONG + STATIC, Haskell, Rust: compiler rejects the program because the addition is ill-typed
+
+Ljudi često mješaju strong i static. Ako se nešto događa tokom compilationa, ne mora nužno značiti da je strong, tj. type safe.
+
+---
+
+# The types of types
+
+* Primitive types - *int*, *string*, *boolean*
+
+--
+* Sum / union types - *enums*
+	- `data Gender = Male | Female`
+
+--
+* Product / intersection types - *records*
+	- `data Pair = Pair Int Double`
+
+--
+* Function types 
+	- `length : String -> Int`
+	- `length : a -> b`
+	- `(α -> ρ)`
+
+--
+* Kind - a type of a type constructor
+
+--
+	- a nullary type constructor = `Int`, written as `*`
+
+--
+	- a unary type constructor = `List Int`, written as `* -> *`
+
+--
+	- a binary type constructor = `Pair Int String` written as `* -> * -> *`
+
+---
+
+## Types of polymorphisms
+
+* ad-hoc polymorphism
+
+--
+	- one name denotes a finite number of programming entities
+
+--
+	- comes in two forms
+		- coercion
+		- function overloading, operator overloading
+
+--
+	- ad-hoc = type of polymorphism is not a fundamental feature of the type system
+
+???
+
+Neki feature van type sustava omogućuje ovu vrstu polimorfizma.
+
+Recimo function overloading je najcesce implementiran name manglingom gdje se tip atributa enkodira u internu reprezentaciju definicije funkcije.
+
+--
+
+* universal polymorphism
+	- parametric polymorphism (a.k.a. generics)
+	- inclusion polymorphism (a.k.a subtyping)
+
+---
+
+### Coercion
+
+```c
+typedef struct point_2d_t {
+    int x; int y;
+} Point2d;
+
+typedef struct point_3d_t {
+    int x; int y; int z;
+} Point3d;
+
+int main() {
+	Point2d *p2d = (Point2d*) malloc(sizeof(Point2d));
+	p2d->x = 3; p2d->y = 1;
+
+	Point3d *p3d = (Point3d*) malloc(sizeof(Point3d));
+	p3d->x = 1; p3d->y = 2; p3d->z = 3;
+
+	printf("Point in 2D: %d, %d\n", p2d->x, p2d->y);
+	printf("Point in 3D: %d, %d, %d\n", p3d->x, p3d->y, p3d->z);
+
+	// Coercion
+	printf("Point in wat-D, %d, %d\n", ((Point2d*) p3d)->x, ((Point2d*) p3d)->y);
+}
+```
+
+---
+
+### Function overloading
+
+```java
+class Summer {
+    public int sum(int x, int y) {
+		return x + y;
+    }
+
+    public String sum(String x, String y) {
+		return new StringBuilder(x).append(y).toString();
+    }
+}
+
+class Example {
+   public static void main(String args[]) {
+       Summer s = new Summer();
+
+       s.sum(1, 2); // 3
+       s.sum("hi", " there"); // "hi there"
+   }
+}
+```
+
+---
+
+### Generics (parametric polymorphism)
+
+Key concepts: Type variables
+
+```haskell
+data Tree a = Empty | Node a (Tree a) (Tree a)
+ 
+mapTree :: (a -> b) -> Tree a -> Tree b
+mapTree f Empty        = Empty
+mapTree f (Node x l r) = Node (f x) (mapTree f l) (mapTree f r)
+
+let t = Node 5 (Node 1 Empty Empty) (Node 4 Empty Empty)
+```
+
+
+```java
+public class Tree<T>{
+	private T value;
+	private Tree<T> left;
+	private Tree<T> right;
+ 
+	public void replaceAll(T value){
+		this.value = value;
+		if(left != null)
+			left.replaceAll(value);
+		if(right != null)
+			right.replaceAll(value);
+	}
+}
+```
+
+---
+
+### Subtyping (inclusion polymorphism) : Nominal
+
+Key concept: Liskov substitution
+
+```cs
+namespace RealWorldSubtypingExample {
+
+   class Shape {
+      public void setWidth(int w) {
+         width = w;
+      }
+
+      public void setHeight(int h) {
+         height = h;
+      }
+
+      protected int width;
+      protected int height;
+   }
+
+   class Rectangle: Shape {
+      public int getArea() { 
+         return (width * height); 
+      }
+   }
+}
+```
+
+---
+
+### Subtyping (inclusion polymorphism) : Structural
+
+Key concept: Liskov substitution
+
+```ocaml
+let x =
+	object
+		val mutable x = 5
+		method get_x = x
+		method set_x y = x <- y
+	end;;
+
+# val x : < get_x : int; set_x : int -> unit > = <obj>
+
+let y =
+	object
+		method get_x = 2
+		method set_x y = Printf.printf "%d\n" y
+	end;;
+
+# val y : < get_x : int; set_x : int -> unit > = <obj>
+```
+
+---
+
+### Subtyping (inclusion polymorphism) : Structural
+
+Key concept: Liskov substitution
+
+```ruby
+class Duck
+  def quack
+    "Quaaaaaack!"
+  end
+end
+
+class Person
+  def quack
+    "I am a Duck. Really!"
+  end
+end
+
+def act_like_a_duck(duck)
+  duck.quack
+end
+
+act_like_a_duck(Duck.new)
+act_like_a_duck(Person.new)
+```
+
+---
+
+### Generics + Subtyping : Variance
+
+Consider an List of Animals:
+
+* **Covariant**: a `[Cat]` is an `[Animal]`
+* **Contravariant**: an `[Animal]` is a `[Cat]`
+* **Invariant**: an `[Animal]` is not a `[Cat]` and a `[Cat]` is not an `[Animal]`
+
+
+--
+**Contravariant problem**: Not every `[Animal]` can be treated as if it were a `[Cat]`, since a client reading from the `List` will expect a `Cat`, but an `[Animal]` may contain e.g. a `Dog`
+
+
+--
+**Covariant problem**: A `[Cat]` can not be treated as an `[Animal]`. It should always be possible to put a `Dog` into an `[Animal]`. With covariant Lists this can not be guaranteed to be safe, since the backing store might actually be an array of cats.
+
+
+--
+**Read-only data types (sources) can be covariant; write-only data types (sinks) can be contravariant. Mutable data types which act as both sources and sinks should be invariant.**
+
+---
+
+### If you want to know more
+
+Materials:
+
+* Types and Programming Languages by Benjamin C. Pierce
+* [Software Foundations](http://www.cis.upenn.edu/~bcpierce/sf/current/index.html) by a number of type theorists (including Benjamin C. Pierce)
+* Wikipedia, Haskell Wiki ...
+
+    </textarea>
+    <script src="/assets/js/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>

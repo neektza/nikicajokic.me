@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Well defined HTTP</title>
+    <meta charset="utf-8">
+	<link rel="stylesheet" href="/assets/css/slides.css" type="text/css">
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle, first
+
+# Well-defined HTTP
+
+## Nikica Jokić
+
+---
+
+# HTTP is deceptively simple
+
+???
+
+looks simple in a browser or from a framework, but …
+
+--
+
+* simple syntax, semantics up to you
+???
+the rfc defines what the protocol looks like, not what it's entities mean
+
+--
+
+* easy to build crappy, bad-behaving APIs
+???
+everyone takes this to mean they can make up their own meaning about constituent parts of the protocol
+
+--
+
+* do you?
+
+--
+
+	- use error status codes
+???
+
+respond with 200 and then say it's an error in the body
+
+most people handle only a few (200, 401, 404 and 500). how about 201 (created), 301 and 307 (moved), 406 (not-acceptable)? how do you decide if it was a client (4xx) or a server (5xx) error?
+
+--
+
+	- respect content-types (accept headers)
+
+???
+
+most APIs respond with a single content-type, irregardless of what you requested (in the accept header)
+
+--
+
+	- handle resource migration and locations
+
+???
+
+resource moved? gone?
+
+
+---
+
+### Aside: 3-way handshake as a state machine
+
+
+<a href="http://www.loriotpro.com/Products/On-line_Documentation_V5/LoriotProDoc_EN/C3-Introduction_to_Network_Supervision/C3-F8_TCP_Overview_EN.htm"><img width="100%" alt="Three way handshake" src="/images/talks/well_defined_http/3way-handshake.png"/></a>
+
+???
+
+we take think of the protocol as just three steps, but there is a state machine describing the details (because as always, the devil is in the details).
+
+---
+
+# HTTP as a state machine
+
+<a href="http://for-get.github.io/http-decision-diagram/httpdd.fsm.html"><img width="100%" alt="HTTP state transitions" src="/images/talks/well_defined_http/httpdd.png"/></a>
+
+---
+
+# Webmachine
+
+Declarative, instead of:
+
+
+```ruby
+get '/hello/:name' do
+  "Hello #{params[:name]}!"
+end
+```
+
+--
+
+You do:
+
+```ruby
+def resource_exists?
+  resource
+end
+```
+
+???
+
+declarative: you don’t define what the verbs do (GETs, PUTs, POSTs and DELETEs)
+
+
+---
+
+# Webmachine
+
+Works by describing facts about the resource:
+
+--
+	
+* known-method? / method-allowed ? 
+
+--
+
+* known-media-type? / media-type-available?
+
+--
+
+* allowed? / authorised?
+
+--
+
+* exists? / existed?
+
+--
+
+* moved-temporarily? / moved-permanently?	
+
+???
+
+there are many more, but these questions are domain specific
+---
+
+# Resources and Q&A
+
+* Wikipedia! : https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol
+* https://github.com/for-GET/know-your-http-well
+* https://github.com/for-GET/http-decision-diagram
+
+    </textarea>
+    <script src="/assets/js/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
+
