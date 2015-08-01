@@ -1,6 +1,5 @@
 ---
 layout: post
-author: Nikica Jokić
 title: Concurrency primitives and abstractions in Ruby
 excerpt: An overview (with examples) of Ruby's fundamental concurrency constructs, threads and fibers and how they relate to more complex concurrency abstractions
 tags: ruby concurrency threads fibers

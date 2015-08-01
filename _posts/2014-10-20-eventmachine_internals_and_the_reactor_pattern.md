@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "EventMachine internals and the Reactor pattern"
-tags: concurrency eventmachine
 excerpt: The idea behind EventMachine is a reactor loop which executes callbacks on program events. This post analyzes Ruby's implementation of this idea
+tags: concurrency eventmachine
 class: article
 comments: true
 ---

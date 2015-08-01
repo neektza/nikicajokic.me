@@ -17,4 +17,4 @@ In short, it encodes the HTTP protocol in a state machine, and guides you in cra
 
 <br/>
 
-[The slides were build using [remark.js](https://github.com/gnab/remark) and are hosted [locally](/talks/well_defined_http.html).
+The slides were build using [remark.js](https://github.com/gnab/remark) and are hosted [locally](/talks/well_defined_http.html).
