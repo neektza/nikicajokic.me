@@ -75,7 +75,7 @@ class StatusResource < JSONResource
 end
 {% endhighlight %}
 
-The `method_allowed?` function checks if the request coming in is a `GET` and returns either a truthy or a falsey value. In the truthy case, the state machine is allowed further processing. Otherwise, the processing stops and Webmachine reponds with an "405 Method Not Allowed" HTTP reponse code.
+The `method_allowed?` function checks if the request coming in is a `GET` and returns either a truthy or a falsey value. In the truthy case, the state machine is allowed further processing. Otherwise, the processing stops and Webmachine responds with an "405 Method Not Allowed" HTTP response code.
 
 Have you ever come across a Rails codebase that uses that particular response code? I know I haven't. What you would usually get back from most APIs is (best case) a 404 response. This way, you know that you're hitting the right resource (and indeed that the resource exists), but you also know that that particular operation is not supported over the resource you're trying to interact with.
 

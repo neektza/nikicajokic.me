@@ -16,9 +16,7 @@ Works but class variables are shared with instances, which is bad.
 {% highlight ruby %}
 {% endhighlight %}
 
-
 The solution.
 
 {% highlight ruby %}
 {% endhighlight %}
-
