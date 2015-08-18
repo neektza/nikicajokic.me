@@ -158,12 +158,13 @@ body {
 		}
 
 
-		.about, .contact-form-wrap {
+		.about {
 			@media (max-width: $desktop-width) { width: 92%; }
 			@media (min-width: $desktop-width+1) { width: 55%; }
+			padding-top: 3em;
+			padding-bottom: 140px;
 			font-size: 1.8em;
 			margin: 0 auto;
-			
 			max-width: 620px;
 
 			img {
@@ -171,14 +172,10 @@ body {
 				display: block;
 			}
 
-			p:first-child {
-				padding-top: 3em;
+			#funnelFormContainer .fnl-intro {
+				display: none;
 			}
-		}
 
-		.contact-form-wrap {
-			border-top: 1px solid #ddd;
-			margin-top: 3em;
 		}
 
 		.article-list,
@@ -341,6 +338,10 @@ body {
 	#funnelFormContainer {
 		width: 80%;
 		margin: auto;
+
+		form fieldset {
+			background-color: white;
+		}
 
 		legend {
 			font-weight: bold;
