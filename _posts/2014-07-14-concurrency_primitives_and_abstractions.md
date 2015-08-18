@@ -176,6 +176,12 @@ Since there are many posts out there that focus on explaining how to build a con
 Next post will explain the main ideas behind EvenMachine and dig into its implementation details to paint a clearer picture of what EventMachine is all about.
 
 ---
+
+<div id="funnelFormContainer"></div>
+<script type="text/javascript" src="//funnelnow.com/widget/363"></script>
+
+---
+
 [^1]: Up until version 1.9 Ruby only had a [green thread](http://en.wikipedia.org/wiki/Green_threads) implementation. Native threads were introduced in version 1.9.
 
 [^2]: In some languages, they are called Green threads, but total equivalence between these terms does not stand because in some of these languages Green threads are scheduled by the language VM itself.

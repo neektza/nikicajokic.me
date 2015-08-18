@@ -158,23 +158,29 @@ body {
 		}
 
 
-		.about {
+		.about, .contact-form-wrap {
 			@media (max-width: $desktop-width) { width: 92%; }
 			@media (min-width: $desktop-width+1) { width: 55%; }
 			font-size: 1.8em;
 			margin: 0 auto;
-			padding-top: 3em;
-			padding-bottom: 9em;
 			
 			max-width: 620px;
-
 
 			img {
 				margin: 1em auto !important;
 				display: block;
 			}
+
+			p:first-child {
+				padding-top: 3em;
+			}
 		}
-	
+
+		.contact-form-wrap {
+			border-top: 1px solid #ddd;
+			margin-top: 3em;
+		}
+
 		.article-list,
 		.talk-list {
 			width: 100%;
@@ -331,6 +337,24 @@ body {
 			}
 		}
 	}
+	
+	#funnelFormContainer {
+		width: 80%;
+		margin: auto;
+
+		legend {
+			font-weight: bold;
+		}
+
+		.fnl-intro, .ctrl-holder input, .ctrl-holder textarea {
+			width: 100%;
+		}
+
+		.button-holder .btn {
+			background-color: orange;
+		}
+	}
+
 
 	#disqus_thread { margin-bottom: 12px }
 }

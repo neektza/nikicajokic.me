@@ -288,6 +288,12 @@ I hope I have given you a somewhat understandable explanation of EM's internals 
 Next up, Celluloid and the Actor pattern.
 
 ---
+
+<div id="funnelFormContainer"></div>
+<script type="text/javascript" src="//funnelnow.com/widget/362"></script>
+
+---
+
 [^1]: By using the [`IO#fcntl`](http://ruby-doc.org/core-2.1.2/IO.html#method-i-fcntl) method which is just a Ruby wrapper over the [`fcntl`](http://linux.die.net/man/2/fcntl) system call for manipulating file descriptors.
 [^2]: The [`IO#select`](http://ruby-doc.org/core-2.1.2/IO.html#method-c-select) method is just a thin wrapper over the [`select`](http://linux.die.net/man/2/select) system call.
 [^3]: EventMachine previously used a Pipe, but now uses a UDP socket to signal a loopbreak, because pipes aren't available on Windows machines. I find the Pipe implementation cleaner and more elegant, so I present it as such here.
