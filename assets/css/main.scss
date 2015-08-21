@@ -237,6 +237,7 @@ body {
 			.entry-body {
 				.entry-content {
 					font-size: 1.8em;
+					p { text-align: justify; }
 				}
 				@include clearfix;
 			}
