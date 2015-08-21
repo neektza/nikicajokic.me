@@ -115,7 +115,10 @@ body {
 					margin: 0px auto;
 					text-align: center;
 					width: 100%;
-					@media (min-width: $desktop-width+1) { width: 55%; }
+					@media (min-width: $desktop-width+1) { 
+						white-space: nowrap;
+						width: 55%; 
+					}
 					padding: 1em 0;
 					max-width: 620px;
 
