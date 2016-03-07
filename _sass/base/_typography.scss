@@ -1,9 +1,7 @@
-@include font-face("Ubuntu", "/assets/fonts/ubuntu/Ubuntu-Regular", normal, $file-formats: ttf);
-@include font-face("Ubuntu", "/assets/fonts/ubuntu/Ubuntu-Light", 300, $file-formats: ttf);
-@include font-face("Ubuntu", "/assets/fonts/ubuntu/Ubuntu-Italic", normal, italic, $file-formats: ttf);
-@include font-face("Ubuntu", "/assets/fonts/ubuntu/Ubuntu-Medium", bold, $file-formats: ttf);
-
-// @import url(http://fonts.googleapis.com/css?family=Ubuntu:400,500,400italic);
+@include font-face("Ubuntu", "/assets/fonts/ubuntu/UbuntuRegular", normal, $file-formats: ttf);
+@include font-face("Ubuntu", "/assets/fonts/ubuntu/UbuntuLight", 300, $file-formats: ttf);
+@include font-face("Ubuntu", "/assets/fonts/ubuntu/UbuntuItalic", normal, italic, $file-formats: ttf);
+@include font-face("Ubuntu", "/assets/fonts/ubuntu/UbuntuMedium", bold, $file-formats: ttf);
 
 body {
   @include font-feature-settings("kern", "liga", "pnum");
