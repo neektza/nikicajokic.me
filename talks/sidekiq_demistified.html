@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sidekiq demistified</title>
+    <meta charset="utf-8">
+	<link rel="stylesheet" href="/assets/css/slides.css" type="text/css">
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Sidekiq demistified<span class=red>*</span>
+
+<div class=footnotes style="left: 31%;">
+	<sup class=red>*</sup> part of Great libraries archeology series
+</div>
+
+### Nikica Jokić
+
+---
+
+class: spacedout
+
+## What even is Sidekiq
+
+--
+
+- efficient background job processing for Rails
+
+???
+
+[this](https://github.com/mperham/sidekiq/blob/master/lib/sidekiq.rb#L40-L42)
+
+why do we need bg jobs
+
+--
+
+- built using magic of threads
+
+???
+
+resque vs sidekiq (processes vs threads)
+
+--
+
+- doesn't hammer the primary DB with unnecesary queries
+
+???
+
+
+---
+
+class: spacedout
+
+## Sidkiq leans on Redis<span class="red">*</span>
+
+<div class="footnotes">
+	<div class="first"><sup class="red">*</sup> which by itself is many kinds of awesome</div>
+</div>
+
+--
+
+- NoSQL : in memory key-value store
+
+???
+
+yay? nosql : no relations and tables
+
+
+http://engineering.wayfair.com/2013/04/devnull-vs-mongodb-benchmark-bake-off/
+
+--
+
+- can [really persist](http://redis.io/topics/persistence) data (via RDB/AOF)
+
+--
+
+- a ["data structure store"](http://redis.io/topics/data-types)
+
+???
+
+it's not a document store (although it can be), it focuses on data structures
+
+--
+
+
+- useful if you want to push state out of your system
+
+???
+
+example: web scarper - SETEX - you want to remember what urls you already visited but want to visit them again in the future
+
+
+---
+
+class: spacedout
+
+## Sidekiq uses TODO lists
+
+--
+
+- queues jobs by leaning on Redis [lists](http://redis.io/commands/lpush)
+
+???
+
+doubly linked list, efficient push/pop operations on both the left and right sides
+
+you can use them both like a FIFO/queue or FILO/stack data structure
+
+--
+
+- what does [perform_later](https://github.com/mperham/sidekiq/blob/v4.0.1/lib/sidekiq/worker.rb#L53-L55) do?
+
+--
+
+- who actually [does the work](https://github.com/mperham/sidekiq/blob/v4.0.1/lib/sidekiq/launcher.rb#L16-L27) ?
+
+---
+
+class: spacedout
+
+## Sidekiq uses a calendar?
+
+--
+
+- schedules jobs by leaning on Redis [sorted sets](http://redis.io/commands/ZADD)
+
+--
+
+- [perform_in](https://github.com/mperham/sidekiq/blob/v4.0.1/lib/sidekiq/worker.rb#L57-L69) is just syntax sugar
+
+--
+
+- how does Sidekiq know [when to execute a job](https://github.com/mperham/sidekiq/blob/v4.0.1/lib/sidekiq/scheduled.rb#L61-L71) ?
+
+---
+
+class: spacedout
+
+## Other cool stuff and resources
+
+- the [self-pipe trick](https://github.com/mperham/sidekiq/blob/master/lib/sidekiq/cli.rb#L52) a.k.a. [breaking through the blocking select](http://www.sitepoint.com/the-self-pipe-trick-explained/)
+
+--
+
+- [watchdog pattern](https://github.com/mperham/sidekiq/blob/v4.0.1/lib/sidekiq/util.rb#L15-L20)
+
+--
+
+- https://github.com/mperham/sidekiq/wiki
+
+--
+
+- use the source Luke
+
+    </textarea>
+
+    <script src="/assets/js/remark-latest.min.js"></script>
+    <script>var slideshow = remark.create();</script>
+  </body>
+</html>
