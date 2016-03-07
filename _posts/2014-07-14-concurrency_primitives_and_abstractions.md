@@ -21,7 +21,7 @@ Ruby is not poor in language primitives dealing with concurrency. It has support
 
 In addition to threads, Ruby has a [coroutine](http://www.ruby-doc.org/core-2.1.1/Fiber.html) implementation named "fibers"[^2]. The most important difference between threads and fibers is that threads depend on the scheduler to manage execution windows, while fibers are cooperative, meaning that being in a fiber the programmer must explicitly yield execution to some other fiber. As such, they are a nice tool to handle concurrently happening things because they can be suspended and resumed as priorities of handling those things change.
 
-To help differentiate  between thread behaviour vs. fiber behaviour, let's build the classic producer-consumer pattern using each of those to implement it.
+To help differentiate between thread behavior vs. fiber behavior, let's build the classic producer-consumer pattern using each of those to implement it.
 
 We'll introduce a dummy AddOneTask implementation to serve our purposes of sending tasks to run over a queue. The task keeps an internal counter and on each invocation of `perform` just increments the counter.
 

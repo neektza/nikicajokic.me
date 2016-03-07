@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Actor based concurrency"
-tags: programming ruby concurrency actors
+tags: ruby actors meetup
 excerpt: Follow up to a talk about Actor based concurrency I gave a local Ruby meetup.
 class: talk
 comments: false

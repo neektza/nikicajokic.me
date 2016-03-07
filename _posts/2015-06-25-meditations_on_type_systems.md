@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Meditations on type-systems <small> (and learning) </small>"
-tags: type-systems 
+tags: type_systems meetup
 excerpt: Follow up to a talk about type systems I gave a local functional programming meetup.
 class: talk
 comments: false
