@@ -13,7 +13,7 @@ For a while now I've been wanting to build my own compiler, because, as Steve Ye
 >
 > You have to know you know, you know.
 
-The thing with building your own programming language is, you can do it in many ways. One way is to just build an interpreter and rely on the programming language you're implementing it in to execute your code. Another is to actually produce machine code. This second approach is the one I want to take. Either that, or I'll build my own bytecode virtual machine.
+The thing with building your own programming language is, you can do it in many ways. One way is to just build an interpreter and rely on the programming language you're implementing it in to execute your code. Another is to actually produce machine code. This second approach is the one I want to take. Either that or I'll build my own bytecode virtual machine.
 
 Since the purpose of building my own programming language is to learn something in the process of building it, I want to be able to go as close to the metal as I want. This implies I have to build it in a systems programming language, such as C or C++. But, since I also want to work in a modern language with a powerful type system, I chose Rust.
 

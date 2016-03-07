@@ -18,9 +18,9 @@ First, let's define what the *Actors* actually are.
 > * create a finite number of new actors;
 > * designate the behavior to be used for the next message it receives.[^1]
 
-Translation: Actor model is a **system inside of which computation is done only by sending messages**. This is an ideal abstraction. Actual implementations of this model rarely limit themselves on doing computation only in this way. This is also the case with _Celluloid_.
+Translation: Actor model is a **system inside of which computation is done only by sending messages**. This is an ideal abstraction. Actual implementations of this model rarely limit themselves to doing computation only in this way. This is also the case with _Celluloid_.
 
-An actor-based system is somewhat similar to an object-based system in that entities communicate with each other by sending messages. The difference between these two conceptual models is that in object based systems computation is sequential while in actor based systems computation is concurrent. In that regard, the actor model more accurately describes the real world because in the real world, everything happens concurrently.
+An actor-based system is somewhat similar to an object-based system in that entities communicate with each other by sending messages. The difference between these two conceptual models is that in object-based systems computation is sequential while in actor based systems computation is concurrent. In that regard, the actor model more accurately describes the real world because in the real world, everything happens concurrently.
 
 Since Ruby has no built-in Actor facilities, Celluloid has to build them.
 
@@ -121,7 +121,7 @@ The sync and async protocols boil down to intercepting method calls with Ruby's 
 
 {% endhighlight %}
 
-We can see that both proxy objects are intercepting all method calls and pushing them onto the mailbox. There are two important differences them though:
+We can see that both proxy objects are intercepting all method calls and pushing them onto the mailbox. There are two important differences them, though:
 
 * `SyncProxy` objects invoke a `value` method that will ultimately respond with a result to the sender and `AsyncProxy` objects don't (they just return `self`),
 * `SyncProxy` and `AsyncProxy` objects wrap the method call into a `SyncCall` and `AsyncCall` objects respectively.
@@ -159,7 +159,7 @@ In addition to invoking the intercepted method, the `SyncCall` object additional
 
 ## Performance considerations of Inter-actor message protocol
 
-_Proxies_ and _calls_ are the foundation of what Celluloid calls inter-actor message protocol. Once (partially) broken down, we can see that the basis of that protocol is Ruby's `method_missing` extreme late-binding facility.
+_Proxies_ and _calls_ are the foundations of what Celluloid calls inter-actor message protocol. Once (partially) broken down, we can see that the basis of that protocol is Ruby's `method_missing` extreme late-binding facility.
 
 [Many](http://technology.customink.com/blog/2012/06/18/profiling-openstruct-eager-loading-method-missing-and-lazy-loading/) [words](http://franck.verrot.fr/blog/2015/07/12/benchmarking-ruby-method-missing-and-define-method/) have already been written about performance implications of Ruby's `method_missing`. Even without considering `method_missing` penalties, Celluloid wraps many things onto every method call increasing memory usage significantly.
 
@@ -168,5 +168,5 @@ Consequently, this means that there is a significant performance penalty to usin
 ---
 [^1]: [Wikipedia](https://en.wikipedia.org/wiki/Actor_model)
 [^2]: Using `included` and `extended` hooks to modify the target class is a well known pattern, an is used in many Ruby libs. There are many more [hooks](http://stackoverflow.com/a/5168554) that you can leverage in your library.
-[^3]: [Properties](https://github.com/celluloid/celluloid-essentials/blob/master/lib/celluloid/internals/properties.rb), unlike class-instance vars can be inherited and unlike class variables are invisible to instances.
+[^3]: [Properties](https://github.com/celluloid/celluloid-essentials/blob/master/lib/celluloid/internals/properties.rb), unlike class-instance vars, can be inherited and unlike class variables are invisible to instances.
 
