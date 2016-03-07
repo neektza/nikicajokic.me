@@ -173,12 +173,7 @@ If you need some of the basics explained, there's a nice intro on GitHub wiki [p
 
 Since there are many posts out there that focus on explaining how to build a concurrent system by relying on these abstractions, in the next two posts we'll focus instead on how these abstractions are implemented from basic building blocks - threads, fibers et al.
 
-Next post will explain the main ideas behind EvenMachine and dig into its implementation details to paint a clearer picture of what EventMachine is all about.
-
----
-
-<div id="funnelFormContainer"></div>
-<script type="text/javascript" src="//funnelnow.com/widget/363"></script>
+[Next post](/eventmachine_internals_and_the_reactor_pattern) will explain the main ideas behind EvenMachine and dig into its implementation details to paint a clearer picture of what EventMachine is all about.
 
 ---
 

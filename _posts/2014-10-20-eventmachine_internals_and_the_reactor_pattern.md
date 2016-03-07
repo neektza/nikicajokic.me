@@ -7,13 +7,11 @@ class: article
 comments: true
 ---
 
-Continuing from the previous posts about [primitives and abstractions](/concurrency_primitives_and_abstractions), in this part of the series we'll pick a few interesting internals from EventMachine's source code, and explain the core ideas behind these snippets. If you're not familiar with EventMachine, this is a [solid series of posts](http://javieracero.com/blog/starting-with-eventmachine-i) to get you started.
-
-As we mentioned in a previous post, the main idea behind EventMachine is the reactor loop. EventMachine itself has several implementations of this idea targeting different platforms. In this post we'll focus on **pure Ruby implementation**.
+<small>Continuing from the previous posts about [primitives and abstractions](/concurrency_primitives_and_abstractions_in_ruby), in this part of the series we'll pick a few interesting internals from EventMachine's source code, and explain the core ideas behind these snippets. If you're not familiar with EventMachine, this is a [solid series of posts](http://javieracero.com/blog/starting-with-eventmachine-i) to get you started.</small>
 
 ## The Reactor pattern
 
-A Reactor is a **process running in an infinite loop reacting to stimulii from the outside world**. Its reactions are codified in the form of registered callbacks that get executed when appropriate conditions are met or certain events occur. 
+A Reactor is a **process running in an infinite loop reacting to stimulii from the outside world**. Its reactions are codified in the form of registered callbacks that get executed when appropriate conditions are met or certain events occur. EventMachine itself has several implementations of this idea targeting different platforms. In this post we'll focus on **pure Ruby implementation**.
 
 Let's see what Wikipedia has to say about the topic:
 
@@ -285,12 +283,7 @@ The `run_deferred_callbacks` method is not strictly a part of the threadpool sys
 
 I hope I have given you a somewhat understandable explanation of EM's internals and that you have a clearer picture in your mind of what's happening under the hood. If you have any questions or comments, be sure to leave them in the comments section below, and I'll give my best to answer them.
 
-Next up, Celluloid and the Actor pattern.
-
----
-
-<div id="funnelFormContainer"></div>
-<script type="text/javascript" src="//funnelnow.com/widget/362"></script>
+Next up, [Celluloid and the Actor pattern](/celluloid_internals_proxy_and_call_objects).
 
 ---
 

@@ -14,7 +14,7 @@ This happened to be my first public talk, so naturally, I learned a lot of thing
 
 While practicing it you'll also have more chances to recognize the fatty parts of your code example and trim them, keeping it lean and to the purpose.
 
-<iframe src="/talks/actors.html" width="600" height="450"></iframe>
+<iframe src="/talks/celluloid_actors_in_actors.html" width="600" height="450"></iframe>
 
 <br/>
 

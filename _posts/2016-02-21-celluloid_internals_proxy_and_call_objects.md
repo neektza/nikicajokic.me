@@ -6,7 +6,7 @@ class: article
 comments: false
 ---
 
-<small> In line of previous two posts about Ruby's [primitives and abstractions](/concurrency_primitives_abstractions_ruby) and [EventMachine and the reactor pattern](/eventmachine_reactor_pattern_demystified), in the last post of the series I intended to cover Celluloid's core ideas and internals, but in the process of writing it I realized Celluloid is much bigger than EventMachine. Consequently, this will instead be a series of posts, each covering an essential part of Celluloid.</small>
+<small> In line of previous two posts about [concurrency primitives and abstractions in Ruby](/concurrency_primitives_and_abstractions_in_ruby) and [EventMachine and the reactor pattern](/eventmachine_internals_and_the_reactor_pattern), in the last post of the series I intended to cover Celluloid's core ideas and internals. But, in the process of writing it I realized that Celluloid was much bigger than EventMachine. Consequently, this will instead be a series of posts, each covering an essential part of Celluloid.</small>
 
 ## The Actor model
 

@@ -17,7 +17,7 @@ Most people want people around them to think they are smart. You can use that va
 
 That's what works for me and I think it works well for now.
 
-<iframe src="/talks/type_systems.html" width="600" height="450"></iframe>
+<iframe src="/talks/meditations_on_type_systems.html" width="600" height="450"></iframe>
 
 <br/>
 
