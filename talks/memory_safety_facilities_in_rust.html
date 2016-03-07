@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Memory safety facilities in Rust</title>
+    <meta charset="utf-8">
+	<link rel="stylesheet" href="/assets/css/slides.css" type="text/css">
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Rust and memory safety
+
+### Nikica Jokić
+
+---
+
+class: center, middle
+
+## Why did I choose Rust?
+
+???
+
+wanted to write my own interpreter/compiler, but was afraid of memory managementa i segfaults :)
+
+---
+
+### Dangling pointers
+
+```rust
+void example() {
+	vector<string> v;
+	
+	auto& elem = v[0];
+	v.push_back("some string"); // may allocate new memory 
+								// and copy the old contents
+	
+	// elem is now pointing to freed memory
+	
+	cout << elem; // crashes!
+}
+
+```
+---
+
+### Iterator invalidation
+
+```rust
+for(iterator it = array.begin(); it != array.end(); ++it) {
+    array.erase(it->first);
+
+    // whoops, now map has been restructured and
+	// iterator still thinks itself is healthy
+}
+```
+
+---
+
+### There's lot of these ...
+
+* Array bounds errors:
+    - Buffer overflow 
+    - Buffer over-read 
+* Dynamic memory errors 
+    - Dangling pointer 
+    - Double free 
+    - Invalid free 
+    - Null pointer accesses 
+* Uninitialized variables 
+    - Wild pointers 
+* Out-of-memory errors 
+    - Stack exhaustion 
+    - Heap exhaustion
+
+---
+
+
+### Aliasing + Mutation <small>(is the root of all evil)</small>
+
+Root cause of all problems related memory safety.
+
+--
+
+* aliasing - multiple refs to the same memory location
+
+--
+
+* mutation - changing the ref itself or ref'd data
+
+--
+
+**There is a ‘data race’ when two or more pointers access the same memory location at the same time, where at least one of them is writing, and the operations are not synchronized.**
+
+---
+
+### Historic overview - C
+
+* completely manual heap management - `malloc()` + `free()`
+
+--
+* `malloc()` returns `void*` - explicit casting required
+
+--
+* many undefined behavious
+	* uninitialized variables
+	* signed `int` overflow
+	* oversized shift amounts
+	* dereferencing a NULL pointer
+
+---
+
+### Historic overview - C++
+
+* `new` + `delete`
+
+--
+* `new T` returns reference to `T`
+
+--
+* objects on the stack are deleted when they go out of scope
+	*  object's destructor is called when the object goes out of scope
+
+--
+* objects on the heap must be deleted manually
+
+--
+* have to manually enforce good memory managemeny practices (RAII)
+	* keep objects on the stack and their resources on the heap
+	* delete resources in the destructor
+
+--
+* there are smarter memory management options (also not enforced)
+	* `unique_ptr` (owned pointer)
+	* `shared_pointer` (shared pointer)
+
+---
+
+### Java, Python, Ruby, Go ...
+
+* `new` + GC
+
+--
+* no control over memory
+	* almost everything a reference
+	* almost all data is stored on the heap
+
+--
+* speed improvements happen in the VM/GC
+
+---
+
+### Rust, core concepts
+
+* ownership (incl. move semantics)
+* borrowing
+	* shared / immutable
+	* singular / mutable
+* lifetimes
+
+--
+
+All of those combined prevent "data races".
+
+---
+
+### Ownership / move semantics
+
+* varibale bindings 'have ownership' of what they’re bound to
+
+--
+* move: I give something to someone (a pointer is copied)
+
+--
+* implies mutation, but there's NO ALIASING ('something' is not mine any more)
+
+--
+
+```rust
+fn main() {
+    let v = vec![1, 2, 3]; // v owns the vector
+
+	let v2 = v; // ownership is moved to 'v2' (copies the pointer)
+
+	println!("v[0] is: {}", v[0]); // Error: use of moved value: 'v'
+}
+```
+---
+
+### Ownership / move semantics
+
+* varibale bindings 'have ownership' of what they’re bound to
+* move: I give something to someone (a pointer is copied)
+* implies mutation, but there's NO ALIASING ('something' is not mine any more)
+
+```rust
+fn give() {
+	let mut vec = Vec::new();
+	vec.push(1);
+	vec.push(2);
+	take(vec);
+}
+
+fn take(vec: Vec<int>) {
+	// do something with the vector
+}
+```
+
+---
+
+### Ownership / move semantics
+
+* varibale bindings 'have ownership' of what they’re bound to
+* move: I give something to someone (a pointer is copied)
+* implies mutation, but there's NO ALIASING ('something' is not mine any more)
+
+```rust
+fn give() {
+	let mut vec = Vec::new();
+	vec.push(1);
+	vec.push(2);
+	take(vec);
+	vec.push(3) // Error: vec has been moved
+				// Prevents: use after free, double move
+}
+
+fn take(vec: Vec<int>) {
+	// do something with the vector
+}
+```
+
+
+---
+
+### Shared borrow
+
+* immutable share: I share a (read-only) reference to something with one or many interested parties
+
+--
+* implies aliasing, there's NO MUTATION
+
+--
+
+```rust
+fn lender() {
+	let mut vec = Vec::new();
+	vec.push(1);
+	vec.push(2);
+	use(&vec);
+}
+
+fn use(vec: &Vec<int>) {
+	// vec is only borrowed here
+}
+```
+
+---
+
+### Shared borrow
+
+* immutable share: I share a (read-only) reference to something with one or many interested parties
+* implies aliasing, there's NO MUTATION
+
+```rust
+fn lender() {
+	let mut vec = Vec::new();
+	vec.push(1);
+	vec.push(2);
+	use(&vec);
+}
+
+fn use(vec: &Vec<int>) {
+	// reading is ok, but..
+	vec.push(3); // Error: can't mutate shared reference
+}
+```
+
+---
+
+### Mutable borrow
+
+* mutable share: I share a (mutable) reference with one and only one interested party
+
+--
+* implies mutation, still NO ALIASING
+
+--
+
+```rust
+fn push_all(from: &Vec<int>, to: &mut Vec<int>) {
+	for elem in from.iter() {
+		to.push(*elem);
+	}
+}
+
+``` 
+
+---
+
+### Mutable borrow
+
+* mutable share: I share a (mutable) reference with one and only one interested party
+* implies mutation, still NO ALIASING
+
+```rust
+fn push_all(from: &Vec<int>, to: &mut Vec<int>) {
+	for elem in from.iter() {
+		to.push(*elem);
+	}
+}
+
+fn caller() {
+	let mut vec = Vec::new();
+	let mut vec2 = Vec::new();
+
+	push_all(&vec, &mut vec); // Error: can't have both shared
+							  // and mutable ref at the same time
+
+	push_all(&vec, &mut vec2); // cool, only one mutable reference
+}
+``` 
+
+---
+
+### Lifetimes
+
+* references have their implicit or explicit lifetimes
+
+--
+* references cannot outlive the thing they're referencing
+
+--
+
+```rust
+fn so_many_lifetimes() {
+	let mut vec = Vec::new();
+	
+	for i in range(0, vec.len()) { // lifetame of elem
+		let elem = &vec[i];
+		vec.push(...); // Error: vec is borrowed
+	}
+	
+	vec.push(); // you're good brah
+}
+```
+
+---
+
+### Lifetimes
+
+* references have their implicit or explicit lifetimes
+* references cannot outlive the thing they're referencing
+
+```rust
+fn lifetime_in_fn() -> &int {
+	let mut vec = Vec::new();
+	//...
+	let elem = &vec[0]; // borrowed here
+	return elem; // Error: elem can outlive vec
+}
+```
+
+---
+
+### Other stuff <small>(I don't yet understand)</small>
+
+* `Rc<T>` - reference counted pointer (runtime cost)
+
+--
+* `Cell<T>` and `RefCell<T>` - interior mutability
+
+--
+* `Arc<T>` - atomically reference counted pointer (thread-safe shared data)
+
+--
+* `Mutex<T>` and `RwLock<T>` - mutually exclusive and read/write locked data (thread-safe exclusive data)
+
+---
+
+### Q&A and (article) references
+
+* http://www.pl-enthusiast.net/2014/07/21/memory-safety/
+* https://doc.rust-lang.org/book/ownership.html
+* https://doc.rust-lang.org/book/references-and-borrowing.html
+* https://doc.rust-lang.org/book/lifetimes.html
+* https://doc.rust-lang.org/book/choosing-your-guarantees.html
+* https://www.youtube.com/watch?v=WQbg6ZMQJvQ
+* http://www.slideshare.net/nikomatsakis/guaranteeing-memory-safety-in-rust-39042975
+
+
+    </textarea>
+
+    <script src="/assets/js/remark-latest.min.js"></script>
+    <script>var slideshow = remark.create();</script>
+  </body>
+</html>
+
