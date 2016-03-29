@@ -6,7 +6,7 @@ class: article
 comments: false
 ---
 
-<small> In line of previous two posts about [concurrency primitives and abstractions in Ruby](/concurrency_primitives_and_abstractions_in_ruby) and [EventMachine and the reactor pattern](/eventmachine_internals_and_the_reactor_pattern), in the last post of the series I intended to cover Celluloid's core ideas and internals. But, in the process of writing it I realized that Celluloid was much bigger than EventMachine. Consequently, this will instead be a series of posts, each covering an essential part of Celluloid.</small>
+<small>In line with the previous two posts about [concurrency primitives and abstractions in Ruby](/concurrency_primitives_and_abstractions_in_ruby) and [EventMachine and the reactor pattern](/eventmachine_internals_and_the_reactor_pattern), I intended to cover Celluloid's core ideas and internals in the last post of the series. However, in the process of writing it, I realized that Celluloid was much bigger than EventMachine. Consequently, this will instead be a series of posts, each covering an essential part of Celluloid.</small>
 
 ## The Actor model
 
@@ -20,7 +20,7 @@ First, let's define what the *Actors* actually are.
 
 Translation: Actor model is a **system inside of which computation is done only by sending messages**. This is an ideal abstraction. Actual implementations of this model rarely limit themselves to doing computation only in this way. This is also the case with _Celluloid_.
 
-An actor-based system is somewhat similar to an object-based system in that entities communicate with each other by sending messages. The difference between these two conceptual models is that in object-based systems computation is sequential while in actor based systems computation is concurrent. In that regard, the actor model more accurately describes the real world because in the real world, everything happens concurrently.
+An actor-based system is somewhat similar to an object-based system in that entities communicate with each other by sending messages. The difference between these two conceptual models is that in object-based systems computation is sequential while in actor based systems computation is concurrent. In that regard, the actor model more accurately describes the real world, because everything happens concurrently in the real world.
 
 Since Ruby has no built-in Actor facilities, Celluloid has to build them.
 
@@ -121,7 +121,7 @@ The sync and async protocols boil down to intercepting method calls with Ruby's 
 
 {% endhighlight %}
 
-We can see that both proxy objects are intercepting all method calls and pushing them onto the mailbox. There are two important differences them, though:
+We can see that both proxy objects are intercepting all method calls and pushing them onto the mailbox. There are two important differences between them, though:
 
 * `SyncProxy` objects invoke a `value` method that will ultimately respond with a result to the sender and `AsyncProxy` objects don't (they just return `self`),
 * `SyncProxy` and `AsyncProxy` objects wrap the method call into a `SyncCall` and `AsyncCall` objects respectively.
@@ -147,7 +147,7 @@ When their time is up, they are processed by the actor (usually in the context o
 
 {% endhighlight %}
 
-In addition to invoking the intercepted method, the `SyncCall` object additionally pushes the response onto the sender's mailbox.
+In addition to invoking the intercepted method, the `SyncCall` object pushes the response onto the sender's mailbox.
 
 {% highlight ruby %}
 
@@ -157,16 +157,15 @@ In addition to invoking the intercepted method, the `SyncCall` object additional
 
 {% endhighlight %}
 
-## Performance considerations of Inter-actor message protocol
+## Performance considerations
 
 _Proxies_ and _calls_ are the foundations of what Celluloid calls inter-actor message protocol. Once (partially) broken down, we can see that the basis of that protocol is Ruby's `method_missing` extreme late-binding facility.
 
-[Many](http://technology.customink.com/blog/2012/06/18/profiling-openstruct-eager-loading-method-missing-and-lazy-loading/) [words](http://franck.verrot.fr/blog/2015/07/12/benchmarking-ruby-method-missing-and-define-method/) have already been written about performance implications of Ruby's `method_missing`. Even without considering `method_missing` penalties, Celluloid wraps many things onto every method call increasing memory usage significantly.
+[Many](http://technology.customink.com/blog/2012/06/18/profiling-openstruct-eager-loading-method-missing-and-lazy-loading/) [articles](http://franck.verrot.fr/blog/2015/07/12/benchmarking-ruby-method-missing-and-define-method/) have already been written about performance implications of Ruby's `method_missing`. Even without considering `method_missing` penalties, Celluloid wraps many things onto every method call increasing memory usage significantly.
 
 Consequently, this means that there is a significant performance penalty to using Celluloid in your codebase. Every abstraction has a cost, but in my opinion, Celluloid is worth it in most cases. Even Mike Pernham says so, and he [removed it as a dependency from Sidekiq](http://www.mikeperham.com/2015/10/14/should-you-use-celluloid/).
 
 ---
 [^1]: [Wikipedia](https://en.wikipedia.org/wiki/Actor_model)
-[^2]: Using `included` and `extended` hooks to modify the target class is a well known pattern, an is used in many Ruby libs. There are many more [hooks](http://stackoverflow.com/a/5168554) that you can leverage in your library.
+[^2]: Using `included` and `extended` hooks to modify the target class is a well-known pattern, an is used in many Ruby libs. There are many more [hooks](http://stackoverflow.com/a/5168554) that you can leverage in your library.
 [^3]: [Properties](https://github.com/celluloid/celluloid-essentials/blob/master/lib/celluloid/internals/properties.rb), unlike class-instance vars, can be inherited and unlike class variables are invisible to instances.
-
